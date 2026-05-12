@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/app/lib/prisma";
 import { notFound } from "next/navigation";
+import BuyButton from "@/app/components/BuyButton";
 
 export default async function EventPage({
   params,
@@ -89,9 +90,7 @@ export default async function EventPage({
                       <span className="font-bold">
                         {Number(ticket.price).toLocaleString("ru-RU")} ₸
                       </span>
-                      <button className="bg-white text-black text-xs px-3 py-1.5 rounded-full hover:bg-white/90 transition">
-                        Купить
-                      </button>
+                      <BuyButton ticketTypeId={ticket.id} />
                     </div>
                   </div>
                 );
