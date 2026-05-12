@@ -1,0 +1,109 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  clerkId   String   @unique
+  email     String   @unique
+  name      String?
+  phone     String?
+  role      Role     @default(BUYER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  orders    Order[]
+}
+
+model Event {
+  id          String      @id @default(cuid())
+  title       String
+  description String?
+  date        DateTime
+  doorsOpen   DateTime?
+  venueId     String
+  venue       Venue       @relation(fields: [venueId], references: [id])
+  imageUrl    String?
+  status      EventStatus @default(DRAFT)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  ticketTypes TicketType[]
+}
+
+model Venue {
+  id       String  @id @default(cuid())
+  name     String
+  address  String
+  city     String
+  country  String  @default("KZ")
+  capacity Int?
+  events   Event[]
+}
+
+model TicketType {
+  id         String   @id @default(cuid())
+  eventId    String
+  event      Event    @relation(fields: [eventId], references: [id])
+  name       String
+  price      Decimal  @db.Decimal(10, 2)
+  currency   String   @default("KZT")
+  totalSeats Int
+  soldSeats  Int      @default(0)
+  createdAt  DateTime @default(now())
+  tickets    Ticket[]
+}
+
+model Ticket {
+  id           String       @id @default(cuid())
+  ticketTypeId String
+  ticketType   TicketType   @relation(fields: [ticketTypeId], references: [id])
+  orderId      String
+  order        Order        @relation(fields: [orderId], references: [id])
+  qrCode       String       @unique
+  status       TicketStatus @default(VALID)
+  createdAt    DateTime     @default(now())
+}
+
+model Order {
+  id          String      @id @default(cuid())
+  userId      String
+  user        User        @relation(fields: [userId], references: [id])
+  totalAmount Decimal     @db.Decimal(10, 2)
+  currency    String      @default("KZT")
+  status      OrderStatus @default(PENDING)
+  stripeId    String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  tickets     Ticket[]
+}
+
+enum Role {
+  BUYER
+  ORGANIZER
+  ADMIN
+}
+
+enum EventStatus {
+  DRAFT
+  PUBLISHED
+  CANCELLED
+  COMPLETED
+}
+
+enum TicketStatus {
+  VALID
+  USED
+  CANCELLED
+  REFUNDED
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  CANCELLED
+  REFUNDED
+}
