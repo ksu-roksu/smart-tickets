@@ -3,7 +3,6 @@ import Link from "next/link";
 export default function Home() {
   return (
     <main className="min-h-screen bg-black text-white">
-      {/* Навигация */}
       <nav className="flex items-center justify-between px-8 py-5 border-b border-white/10">
         <Link href="/" className="text-xl font-bold tracking-tight">
           Smart Tickets
@@ -12,13 +11,18 @@ export default function Home() {
           <Link href="/events" className="text-sm text-white/60 hover:text-white transition">
             События
           </Link>
+          <Link href="/dashboard" className="text-sm text-white/60 hover:text-white transition">
+            Мои билеты
+          </Link>
+          <Link href="/dashboard/organizer" className="text-sm text-white/60 hover:text-white transition">
+            Организатор
+          </Link>
           <Link href="/sign-in" className="text-sm bg-white text-black px-4 py-2 rounded-full hover:bg-white/90 transition">
             Войти
           </Link>
         </div>
       </nav>
 
-      {/* Герой */}
       <section className="px-8 py-24 max-w-4xl mx-auto">
         <p className="text-sm text-white/40 uppercase tracking-widest mb-4">
           Smart Kazakhstan
@@ -37,7 +41,6 @@ export default function Home() {
         </Link>
       </section>
 
-      {/* Категории */}
       <section className="px-8 py-16 border-t border-white/10">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-2xl font-bold mb-8">Категории</h2>
