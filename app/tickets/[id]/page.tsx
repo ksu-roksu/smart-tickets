@@ -40,16 +40,13 @@ export default async function TicketPage({
       </nav>
 
       <div className="max-w-sm mx-auto px-8 py-12">
-        {/* Билет */}
         <div className="border border-white/20 rounded-3xl overflow-hidden">
-          {/* Шапка */}
           <div className="bg-white/5 px-6 py-5 border-b border-white/10">
             <p className="text-xs text-white/40 uppercase tracking-widest mb-1">Smart Tickets</p>
             <h1 className="text-xl font-bold">{ticket.ticketType.event.title}</h1>
             <p className="text-sm text-white/60 mt-1">{ticket.ticketType.name}</p>
           </div>
 
-          {/* Инфо */}
           <div className="px-6 py-4 border-b border-white/10 grid grid-cols-2 gap-4">
             <div>
               <p className="text-xs text-white/40 mb-1">ДАТА</p>
@@ -66,12 +63,10 @@ export default async function TicketPage({
             </div>
           </div>
 
-          {/* QR код — rotating */}
           <div className="px-6 py-6 flex flex-col items-center">
             <RotatingQR ticketId={ticket.id} />
           </div>
 
-          {/* Статус */}
           <div className="px-6 py-4 border-t border-white/10 flex items-center justify-between">
             <span className="text-xs text-white/40 font-mono">
               #{ticket.id.slice(0, 8).toUpperCase()}
