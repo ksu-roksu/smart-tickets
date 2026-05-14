@@ -9,59 +9,38 @@ import {
   MessageCircle, Send, Phone, Building2,
   FileText, Lock, RefreshCw, ArrowUpRight, Ticket,
 } from 'lucide-react';
+import {
+  type EventItem,
+  minPrice, seatsLeft, fmtDate, daysUntil,
+  getEventBadge, getEventImage,
+  GRADIENTS, MOODS, CATEGORIES,
+} from '@/app/lib/event-utils';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type TicketType = { price: number | string; totalSeats: number; soldSeats: number };
-type Event = {
-  id: string;
-  title: string;
-  date: string | Date;
-  venue: { city: string; name: string };
-  ticketTypes: TicketType[];
-  category?: string;
-  imageUrl?: string | null;
-};
 type Stats = { totalSold: number; concert: number; theatre: number; sport: number };
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+// ─── Countdown ────────────────────────────────────────────────────────────────
 
-const minPrice = (tt: TicketType[]) =>
-  tt.length ? Math.min(...tt.map(t => Number(t.price))) : null;
-const seatsLeft = (tt: TicketType[]) =>
-  tt.reduce((a, t) => a + (t.totalSeats - t.soldSeats), 0);
-const fmtDate = (d: string | Date) =>
-  new Date(d).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' });
-const daysUntil = (d: string | Date) =>
-  Math.ceil((new Date(d).getTime() - Date.now()) / 86400000);
-
-// ─── Image system ─────────────────────────────────────────────────────────────
-
-const CATEGORY_IMAGES: Record<string, string> = {
-  concert:    'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=800&q=75',
-  theatre:    'https://images.unsplash.com/photo-1503095396549-807759245b35?w=800&q=75',
-  sport:      'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=800&q=75',
-  standup:    'https://images.unsplash.com/photo-1527224857830-43a7acc85260?w=800&q=75',
-  exhibition: 'https://images.unsplash.com/photo-1531058020387-3be344556be6?w=800&q=75',
-  default:    'https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=800&q=75',
-};
-
-const GRADIENTS = [
-  'from-[#2d1b69] to-[#11998e]',
-  'from-[#c94b4b] to-[#4b134f]',
-  'from-[#134e5e] to-[#71b280]',
-  'from-[#373b44] to-[#4286f4]',
-  'from-[#1a1a2e] to-[#e96c6c]',
-  'from-[#2c3e50] to-[#fd746c]',
-];
-
-function getEventImage(event: Event): string | null {
-  if (event.imageUrl && event.imageUrl.startsWith('http')) return event.imageUrl;
-  return CATEGORY_IMAGES[event.category ?? ''] ?? CATEGORY_IMAGES.default;
+function Countdown({ date }: { date: string | Date }) {
+  const [ms, setMs] = useState(0);
+  useEffect(() => {
+    const tick = () => setMs(Math.max(0, new Date(date).getTime() - Date.now()));
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [date]);
+  const d = Math.floor(ms / 86400000);
+  const h = Math.floor((ms % 86400000) / 3600000);
+  const m = Math.floor((ms % 3600000) / 60000);
+  const s = Math.floor((ms % 60000) / 1000);
+  if (d > 0) return <span>{d}д {String(h).padStart(2, '0')}ч</span>;
+  return <span>{String(h).padStart(2,'0')}:{String(m).padStart(2,'0')}:{String(s).padStart(2,'0')}</span>;
 }
 
-// EventBg — renders image if available, gradient fallback
-function EventBg({ event, idx, className = '' }: { event: Event; idx: number; className?: string }) {
+// ─── EventBg ──────────────────────────────────────────────────────────────────
+
+function EventBg({ event, idx, className = '' }: { event: EventItem; idx: number; className?: string }) {
   const img = getEventImage(event);
   const [imgError, setImgError] = useState(false);
 
@@ -86,61 +65,9 @@ function EventBg({ event, idx, className = '' }: { event: Event; idx: number; cl
   );
 }
 
-// ─── Badge logic ──────────────────────────────────────────────────────────────
-
-function getEventBadge(event: Event): { label: string; color: string } | null {
-  const days = daysUntil(event.date);
-  const left = seatsLeft(event.ticketTypes);
-  const total = event.ticketTypes.reduce((a, t) => a + t.totalSeats, 0);
-  const soldPct = total > 0 ? (total - left) / total : 0;
-
-  if (left > 0 && left <= 10) return { label: `Осталось ${left}`, color: 'bg-red-500' };
-  if (soldPct >= 0.8)         return { label: '🔥 Хит продаж', color: 'bg-[#FF4D00]' };
-  if (days >= 0 && days <= 3) return { label: '⚡ Скоро', color: 'bg-yellow-500' };
-  if (days >= 0 && days <= 7) return { label: '🕐 Заканчивается', color: 'bg-orange-600' };
-  return null;
-}
-
-// ─── Mood & Category data ─────────────────────────────────────────────────────
-
-const MOODS = [
-  { emoji: '🔥', label: 'Зажечь',   value: 'energetic' },
-  { emoji: '😌', label: 'Спокойно', value: 'calm' },
-  { emoji: '👨‍👩‍👧', label: 'Семья',    value: 'family' },
-  { emoji: '💫', label: 'Свидание', value: 'date' },
-  { emoji: '🎉', label: 'Праздник', value: 'party' },
-  { emoji: '🎭', label: 'Культура', value: 'culture' },
-];
-
-const CATEGORIES = [
-  { label: 'Все',      value: '' },
-  { label: 'Концерты', value: 'concert' },
-  { label: 'Театр',    value: 'theatre' },
-  { label: 'Спорт',    value: 'sport' },
-  { label: 'Стендап',  value: 'standup' },
-];
-
-// ─── Countdown ────────────────────────────────────────────────────────────────
-
-function Countdown({ date }: { date: string | Date }) {
-  const [ms, setMs] = useState(0);
-  useEffect(() => {
-    const tick = () => setMs(Math.max(0, new Date(date).getTime() - Date.now()));
-    tick();
-    const id = setInterval(tick, 1000);
-    return () => clearInterval(id);
-  }, [date]);
-  const d = Math.floor(ms / 86400000);
-  const h = Math.floor((ms % 86400000) / 3600000);
-  const m = Math.floor((ms % 3600000) / 60000);
-  const s = Math.floor((ms % 60000) / 1000);
-  if (d > 0) return <span>{d}д {String(h).padStart(2, '0')}ч</span>;
-  return <span>{String(h).padStart(2,'0')}:{String(m).padStart(2,'0')}:{String(s).padStart(2,'0')}</span>;
-}
-
 // ─── Hero Card ────────────────────────────────────────────────────────────────
 
-function HeroCard({ event }: { event: Event }) {
+function HeroCard({ event }: { event: EventItem }) {
   const price  = minPrice(event.ticketTypes);
   const left   = seatsLeft(event.ticketTypes);
   const days   = daysUntil(event.date);
@@ -154,7 +81,6 @@ function HeroCard({ event }: { event: Event }) {
       style={{ minHeight: '200px', background: '#0f1923' }}>
       <EventBg event={event} idx={0} />
 
-      {/* Badges */}
       <div className="absolute top-3 left-3 right-3 flex items-start justify-between z-10">
         {badge ? (
           <span className={`${badge.color} text-white text-[10px] font-bold px-2.5 py-1 rounded-full`}>
@@ -203,7 +129,7 @@ function HeroCard({ event }: { event: Event }) {
 
 // ─── Small Scroll Card ────────────────────────────────────────────────────────
 
-function SmallCard({ event, idx }: { event: Event; idx: number }) {
+function SmallCard({ event, idx }: { event: EventItem; idx: number }) {
   const price = minPrice(event.ticketTypes);
   const badge = getEventBadge(event);
 
@@ -231,7 +157,7 @@ function SmallCard({ event, idx }: { event: Event; idx: number }) {
 
 // ─── Desktop Side Card ────────────────────────────────────────────────────────
 
-function DesktopSideCard({ event, idx }: { event: Event; idx: number }) {
+function DesktopSideCard({ event, idx }: { event: EventItem; idx: number }) {
   const price = minPrice(event.ticketTypes);
   const badge = getEventBadge(event);
 
@@ -259,7 +185,7 @@ function DesktopSideCard({ event, idx }: { event: Event; idx: number }) {
 
 // ─── Recommendation Card ──────────────────────────────────────────────────────
 
-function RecoCard({ event, idx }: { event: Event; idx: number }) {
+function RecoCard({ event, idx }: { event: EventItem; idx: number }) {
   const price = minPrice(event.ticketTypes);
   const badge = getEventBadge(event);
 
@@ -291,7 +217,7 @@ function RecoCard({ event, idx }: { event: Event; idx: number }) {
 
 // ─── Popular Now ──────────────────────────────────────────────────────────────
 
-function PopularNow({ events }: { events: Event[] }) {
+function PopularNow({ events }: { events: EventItem[] }) {
   const top = events.slice(0, 3);
   if (!top.length) return null;
   return (
@@ -308,11 +234,10 @@ function PopularNow({ events }: { events: Event[] }) {
         return (
           <Link key={event.id} href={`/events/${event.id}`}
             className="flex items-center gap-3 px-4 py-3 border-b border-white/5 last:border-0 hover:bg-white/4 transition group">
-            {/* Mini thumbnail */}
             <div className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 relative"
               style={{ background: '#1a1a2e' }}>
               {getEventImage(event) && (
-                <img src={getEventImage(event)!} alt=""
+                <img src={getEventImage(event)} alt=""
                   className="w-full h-full object-cover"
                   onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
               )}
@@ -365,7 +290,6 @@ function Footer() {
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-10 md:py-14">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
 
-          {/* Brand */}
           <div>
             <Link href="/" className="inline-flex items-center font-extrabold text-xl tracking-tight text-white mb-3">
               Smart<span className="text-orange-500">Tickets</span>
@@ -388,7 +312,6 @@ function Footer() {
             </div>
           </div>
 
-          {/* Покупателям */}
           <div>
             <p className="text-xs font-semibold text-white/30 uppercase tracking-widest mb-4">Покупателям</p>
             <div className="flex flex-col gap-2.5">
@@ -404,7 +327,6 @@ function Footer() {
             </div>
           </div>
 
-          {/* Компания */}
           <div>
             <p className="text-xs font-semibold text-white/30 uppercase tracking-widest mb-4">Компания</p>
             <div className="flex flex-col gap-2.5">
@@ -419,7 +341,6 @@ function Footer() {
             </div>
           </div>
 
-          {/* Организаторам */}
           <div>
             <p className="text-xs font-semibold text-white/30 uppercase tracking-widest mb-4">Организаторам</p>
             <div className="flex flex-col gap-2.5 mb-4">
@@ -439,7 +360,6 @@ function Footer() {
           </div>
         </div>
 
-        {/* Cities */}
         <div className="border-t border-white/6 pt-6 mb-6">
           <p className="text-xs text-white/25 uppercase tracking-widest mb-3">Города присутствия</p>
           <div className="flex flex-wrap gap-2">
@@ -452,7 +372,6 @@ function Footer() {
           </div>
         </div>
 
-        {/* Legal */}
         <div className="border-t border-white/6 pt-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <p className="text-xs text-white/25">© 2026 Smart Kazakhstan. Все права защищены.</p>
           <div className="flex flex-wrap gap-4">
@@ -479,7 +398,7 @@ export default function HomePage() {
   const router = useRouter();
   const [query, setQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('');
-  const [events, setEvents] = useState<Event[]>([]);
+  const [events, setEvents] = useState<EventItem[]>([]);
   const [stats, setStats] = useState<Stats>({ totalSold: 0, concert: 0, theatre: 0, sport: 0 });
   const [loading, setLoading] = useState(true);
 
@@ -508,7 +427,6 @@ export default function HomePage() {
         {/* ══════════════ MOBILE ══════════════ */}
         <div className="md:hidden">
 
-          {/* Search */}
           <form onSubmit={handleSearch} className="mx-3.5 mt-2.5 mb-2.5">
             <div className="flex items-center gap-2 bg-white/7 border border-white/10 rounded-xl px-3 py-2.5 focus-within:border-white/25 transition">
               <Search size={14} className="text-white/25 flex-shrink-0" />
@@ -518,13 +436,11 @@ export default function HomePage() {
             </div>
           </form>
 
-          {/* Hero */}
           {loading
             ? <div className="mx-3.5 mb-3 rounded-[20px] bg-white/5 animate-pulse" style={{ height: '200px' }} />
             : heroEvent && <div className="mx-3.5 mb-3"><HeroCard event={heroEvent} /></div>
           }
 
-          {/* Mood icons */}
           <p className="text-[10px] text-white/25 uppercase tracking-widest mx-3.5 mb-2">Настроение</p>
           <div className="flex gap-3 overflow-x-auto pb-1 px-3.5 scrollbar-hide mb-3">
             {MOODS.map(mood => (
@@ -538,7 +454,6 @@ export default function HomePage() {
             ))}
           </div>
 
-          {/* Category tabs */}
           <div className="flex gap-1.5 overflow-x-auto px-3.5 pb-1 scrollbar-hide mb-3">
             {CATEGORIES.map(cat => (
               <button key={cat.value} onClick={() => setActiveCategory(cat.value)}
@@ -549,7 +464,6 @@ export default function HomePage() {
             ))}
           </div>
 
-          {/* Cards horizontal scroll */}
           <p className="text-[10px] text-white/25 uppercase tracking-widest mx-3.5 mb-2">Ближайшие</p>
           <div className="flex gap-2.5 overflow-x-auto px-3.5 pb-1 scrollbar-hide mb-4">
             {loading
@@ -558,10 +472,8 @@ export default function HomePage() {
             }
           </div>
 
-          {/* Popular Now */}
           <div className="mx-3.5 mb-4"><PopularNow events={events} /></div>
 
-          {/* Recommendations */}
           {recoEvents.length > 0 && (
             <div className="mb-4">
               <div className="flex items-center justify-between mx-3.5 mb-2.5">
@@ -576,7 +488,6 @@ export default function HomePage() {
             </div>
           )}
 
-          {/* Why Us */}
           <div className="px-3.5 mb-4">
             <p className="text-xs font-bold text-white/50 uppercase tracking-widest mb-3">Почему Smart Tickets</p>
             <WhyUs />
@@ -587,7 +498,6 @@ export default function HomePage() {
         <div className="hidden md:block">
           <section className="px-6 lg:px-8 pt-12 pb-8 max-w-7xl mx-auto">
 
-            {/* Live badge */}
             <div className="flex items-center gap-4 mb-6">
               <div className="inline-flex items-center gap-2 bg-[#FF4D00]/10 border border-[#FF4D00]/20 rounded-full px-4 py-2">
                 <span className="w-2 h-2 bg-[#FF4D00] rounded-full animate-pulse" />
@@ -600,7 +510,6 @@ export default function HomePage() {
               </span>
             </div>
 
-            {/* Title + search */}
             <div className="mb-8">
               <h1 className="text-6xl xl:text-7xl font-black tracking-tighter leading-[0.9] mb-6">
                 Лучшие события<br /><span className="text-white/18">Казахстана</span>
@@ -620,7 +529,6 @@ export default function HomePage() {
               </form>
             </div>
 
-            {/* Mood pills */}
             <div className="flex gap-2 flex-wrap mb-5">
               {MOODS.map(mood => (
                 <Link key={mood.value} href={`/events?mood=${mood.value}`}
@@ -630,7 +538,6 @@ export default function HomePage() {
               ))}
             </div>
 
-            {/* Category tabs */}
             <div className="flex gap-2 mb-6">
               {CATEGORIES.map(cat => (
                 <button key={cat.value} onClick={() => setActiveCategory(cat.value)}
@@ -641,7 +548,6 @@ export default function HomePage() {
               ))}
             </div>
 
-            {/* Bento grid */}
             {loading ? (
               <div className="grid grid-cols-3 gap-4 mb-4 animate-pulse">
                 <div className="col-span-2 rounded-3xl bg-white/4" style={{ minHeight:'300px' }} />
@@ -653,7 +559,6 @@ export default function HomePage() {
             ) : (
               <div className="grid grid-cols-3 gap-4 mb-4">
 
-                {/* Desktop Hero */}
                 {heroEvent && (
                   <Link href={`/events/${heroEvent.id}`}
                     className="col-span-2 relative rounded-3xl overflow-hidden group flex flex-col justify-end"
@@ -695,17 +600,14 @@ export default function HomePage() {
                   </Link>
                 )}
 
-                {/* Side cards */}
                 <div className="flex flex-col gap-4">
                   {sideEvents.map((e, i) => <DesktopSideCard key={e.id} event={e} idx={i} />)}
                 </div>
 
-                {/* Popular Now */}
                 <div className="col-span-1">
                   <PopularNow events={events} />
                 </div>
 
-                {/* Grid events */}
                 {gridEvents.map(event => (
                   <Link key={event.id} href={`/events/${event.id}`}
                     className="rounded-3xl bg-white/4 border border-white/8 hover:border-white/18 p-5 flex flex-col justify-between group transition"
@@ -736,7 +638,6 @@ export default function HomePage() {
               </div>
             )}
 
-            {/* Recommendations */}
             {recoEvents.length > 0 && (
               <div className="mb-8">
                 <div className="flex items-center justify-between mb-4">
@@ -753,7 +654,6 @@ export default function HomePage() {
               </div>
             )}
 
-            {/* Trending */}
             {events.length > 0 && (
               <div className="mb-8">
                 <h2 className="flex items-center gap-2 text-lg font-bold text-white mb-4">
@@ -764,11 +664,9 @@ export default function HomePage() {
                     <Link key={event.id} href={`/events/${event.id}`}
                       className="flex items-center gap-3 bg-white/3 border border-white/7 hover:border-white/15 rounded-2xl p-3.5 group transition">
                       <div className="w-12 h-12 rounded-xl overflow-hidden flex-shrink-0 relative" style={{ background:'#1a1a2e' }}>
-                        {getEventImage(event) && (
-                          <img src={getEventImage(event)!} alt=""
-                            className="w-full h-full object-cover"
-                            onError={(e) => { (e.target as HTMLImageElement).style.display='none'; }} />
-                        )}
+                        <img src={getEventImage(event)} alt=""
+                          className="w-full h-full object-cover"
+                          onError={(e) => { (e.target as HTMLImageElement).style.display='none'; }} />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-semibold text-white truncate group-hover:text-white/80 transition">{event.title}</p>
@@ -785,7 +683,6 @@ export default function HomePage() {
               </div>
             )}
 
-            {/* Why Us */}
             <div className="mb-8">
               <h2 className="flex items-center gap-2 text-lg font-bold text-white mb-4">
                 <Star size={18} className="text-yellow-400" />Почему Smart Tickets
