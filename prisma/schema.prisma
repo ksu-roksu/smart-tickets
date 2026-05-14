@@ -20,17 +20,50 @@ model User {
 
 model Event {
   id          String      @id @default(cuid())
+
   title       String
   description String?
+
+  // Категория
   category    String?
+
+  // Дополнительные теги
+  tags        String[]    @default([])
+
+  // Даты
   date        DateTime
   doorsOpen   DateTime?
+
+  // Kids / duration
+  ageMin      Int?
+  ageMax      Int?
+  durationMin Int?
+
+  // Outdoor / indoor
+  isOutdoor   Boolean     @default(false)
+
+  // Hero / featured
+  isFeatured  Boolean     @default(false)
+
+  // Venue
   venueId     String
   venue       Venue       @relation(fields: [venueId], references: [id])
+
+  // Media
   imageUrl    String?
+  coverUrl    String?
+
+  // Status
   status      EventStatus @default(DRAFT)
+
+  // SEO
+  slug        String?     @unique
+
+  // Meta
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
+
+  // Relations
   ticketTypes TicketType[]
 }
 

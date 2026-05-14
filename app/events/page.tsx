@@ -5,9 +5,7 @@ import { Suspense } from 'react';
 import { prisma } from '@/app/lib/prisma';
 import CatalogClient from '@/app/components/catalog/CatalogClient';
 
-// ─── Server Component — fetches all published events ─────────────────────────
-
-export const revalidate = 60; // ISR: обновляем каждую минуту
+export const revalidate = 60;
 
 async function getEvents() {
   const events = await prisma.event.findMany({
@@ -19,13 +17,20 @@ async function getEvents() {
     orderBy: { date: 'asc' },
   });
 
-  // Сериализуем Decimal + Date для клиента
   return events.map((e) => ({
     id: e.id,
     title: e.title,
     description: e.description,
-    category: e.category ?? undefined,
+    category: e.category,
+    tags: e.tags,
     imageUrl: e.imageUrl,
+    coverUrl: e.coverUrl,
+    ageMin: e.ageMin,
+    ageMax: e.ageMax,
+    durationMin: e.durationMin,
+    isOutdoor: e.isOutdoor,
+    isFeatured: e.isFeatured,
+    slug: e.slug,
     date: e.date.toISOString(),
     venue: {
       id: e.venue.id,
@@ -61,6 +66,7 @@ export default async function EventsPage({
         initialQuery={params.q ?? ''}
         initialCity={params.city ?? ''}
         initialCategory={params.category ?? ''}
+        initialMood={params.mood ?? ''}
       />
     </Suspense>
   );

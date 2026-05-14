@@ -401,6 +401,39 @@ export default function HomePage() {
   const [events, setEvents] = useState<EventItem[]>([]);
   const [stats, setStats] = useState<Stats>({ totalSold: 0, concert: 0, theatre: 0, sport: 0 });
   const [loading, setLoading] = useState(true);
+  const [selectedCity, setSelectedCity] = useState('Алматы');
+
+useEffect(() => {
+  const readCity = () => {
+    const city =
+      localStorage.getItem('smarttickets_city') ||
+      localStorage.getItem('selectedCity') ||
+      localStorage.getItem('city') ||
+      'Алматы';
+
+    setSelectedCity(city);
+  };
+
+  readCity();
+
+  window.addEventListener('storage', readCity);
+  window.addEventListener('smarttickets:city-change', readCity);
+
+  return () => {
+    window.removeEventListener('storage', readCity);
+    window.removeEventListener('smarttickets:city-change', readCity);
+  };
+}, []);
+
+const eventsHref = (params: Record<string, string>) => {
+  const search = new URLSearchParams(params);
+
+  if (selectedCity && selectedCity !== 'Все города') {
+    search.set('city', selectedCity);
+  }
+
+  return `/events?${search.toString()}`;
+};
 
   useEffect(() => {
     fetch('/api/home-data')
@@ -410,9 +443,14 @@ export default function HomePage() {
   }, []);
 
   const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    router.push(query.trim() ? `/events?q=${encodeURIComponent(query.trim())}` : '/events');
-  };
+  e.preventDefault();
+
+  const params: Record<string, string> = {};
+
+  if (query.trim()) params.q = query.trim();
+
+  router.push(eventsHref(params));
+};
 
   const filtered    = activeCategory ? events.filter(e => e.category === activeCategory) : events;
   const heroEvent   = filtered[0];
@@ -443,15 +481,18 @@ export default function HomePage() {
 
           <p className="text-[10px] text-white/25 uppercase tracking-widest mx-3.5 mb-2">Настроение</p>
           <div className="flex gap-3 overflow-x-auto pb-1 px-3.5 scrollbar-hide mb-3">
-            {MOODS.map(mood => (
-              <Link key={mood.value} href={`/events?mood=${mood.value}`}
-                className="flex flex-col items-center gap-1.5 flex-shrink-0">
-                <div className="w-12 h-12 rounded-2xl bg-white/7 border border-white/10 flex items-center justify-center text-xl active:scale-95 transition">
-                  {mood.emoji}
-                </div>
-                <span className="text-[9px] text-white/40 whitespace-nowrap">{mood.label}</span>
-              </Link>
-            ))}
+            {MOODS.map((mood) => (
+  <Link
+    key={mood.value}
+    href={eventsHref({ mood: mood.value })}
+    className="flex flex-col items-center gap-1.5 flex-shrink-0"
+  >
+    <div className="w-12 h-12 rounded-2xl bg-white/7 border border-white/10 flex items-center justify-center text-xl active:scale-95 transition">
+      {mood.emoji}
+    </div>
+    <span className="text-[9px] text-white/40 whitespace-nowrap">{mood.label}</span>
+  </Link>
+))}
           </div>
 
           <div className="flex gap-1.5 overflow-x-auto px-3.5 pb-1 scrollbar-hide mb-3">
@@ -530,12 +571,16 @@ export default function HomePage() {
             </div>
 
             <div className="flex gap-2 flex-wrap mb-5">
-              {MOODS.map(mood => (
-                <Link key={mood.value} href={`/events?mood=${mood.value}`}
-                  className="flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/8 rounded-full px-4 py-2 text-sm text-white/60 hover:text-white/90 transition">
-                  <span>{mood.emoji}</span><span>{mood.label}</span>
-                </Link>
-              ))}
+              {MOODS.map((mood) => (
+  <Link
+    key={mood.value}
+    href={eventsHref({ mood: mood.value })}
+    className="flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/8 rounded-full px-4 py-2 text-sm text-white/60 hover:text-white/90 transition"
+  >
+    <span>{mood.emoji}</span>
+    <span>{mood.label}</span>
+  </Link>
+))}
             </div>
 
             <div className="flex gap-2 mb-6">
