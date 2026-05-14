@@ -22,6 +22,7 @@ model Event {
   id          String      @id @default(cuid())
   title       String
   description String?
+  category    String?
   date        DateTime
   doorsOpen   DateTime?
   venueId     String
