@@ -1,3 +1,7 @@
+// Smart Tickets — prisma/schema.prisma
+// v2.0 — расширенная схема с RBAC, организациями, аудитом, антифродом
+// Обратно совместима с seed.ts и текущим каталогом
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -7,110 +11,31 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ============================================================
+// DOMAIN: USERS & IDENTITY
+// ============================================================
+
 model User {
   id        String   @id @default(cuid())
   clerkId   String   @unique
   email     String   @unique
   name      String?
   phone     String?
+  avatarUrl String?
   role      Role     @default(BUYER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-}
 
-model Event {
-  id          String      @id @default(cuid())
+  memberships  OrganizationMember[]
+  orders       Order[]
+  auditLogs    AuditLog[]           @relation("AuditActor")
+  supportNotes SupportNote[]        @relation("SupportAuthor")
+  scanLogs     ScanLog[]
+  fraudSignals FraudSignal[]
+  tickets      Ticket[]
 
-  title       String
-  description String?
-
-  // Категория
-  category    String?
-
-  // Дополнительные теги
-  tags        String[]    @default([])
-
-  // Даты
-  date        DateTime
-  doorsOpen   DateTime?
-
-  // Kids / duration
-  ageMin      Int?
-  ageMax      Int?
-  durationMin Int?
-
-  // Outdoor / indoor
-  isOutdoor   Boolean     @default(false)
-
-  // Hero / featured
-  isFeatured  Boolean     @default(false)
-
-  // Venue
-  venueId     String
-  venue       Venue       @relation(fields: [venueId], references: [id])
-
-  // Media
-  imageUrl    String?
-  coverUrl    String?
-
-  // Status
-  status      EventStatus @default(DRAFT)
-
-  // SEO
-  slug        String?     @unique
-
-  // Meta
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-
-  // Relations
-  ticketTypes TicketType[]
-}
-
-model Venue {
-  id       String  @id @default(cuid())
-  name     String
-  address  String
-  city     String
-  country  String  @default("KZ")
-  capacity Int?
-  events   Event[]
-}
-
-model TicketType {
-  id         String   @id @default(cuid())
-  eventId    String
-  event      Event    @relation(fields: [eventId], references: [id])
-  name       String
-  price      Decimal  @db.Decimal(10, 2)
-  currency   String   @default("KZT")
-  totalSeats Int
-  soldSeats  Int      @default(0)
-  createdAt  DateTime @default(now())
-  tickets    Ticket[]
-}
-
-model Ticket {
-  id           String       @id @default(cuid())
-  ticketTypeId String
-  ticketType   TicketType   @relation(fields: [ticketTypeId], references: [id])
-  orderId      String
-  order        Order        @relation(fields: [orderId], references: [id])
-  qrCode       String       @unique
-  status       TicketStatus @default(VALID)
-  createdAt    DateTime     @default(now())
-}
-
-model Order {
-  id          String      @id @default(cuid())
-  userId      String?
-  totalAmount Decimal     @db.Decimal(10, 2)
-  currency    String      @default("KZT")
-  status      OrderStatus @default(PENDING)
-  stripeId    String?
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  tickets     Ticket[]
+  @@index([clerkId])
+  @@index([email])
 }
 
 enum Role {
@@ -119,11 +44,569 @@ enum Role {
   ADMIN
 }
 
+// ============================================================
+// DOMAIN: ORGANIZATIONS (multi-tenant)
+// ============================================================
+
+model Organization {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  name        String
+  legalName   String?
+  bin         String?
+  logoUrl     String?
+  website     String?
+  phone       String?
+  email       String?
+  city        String?
+  address     String?
+  description String?
+  status      OrgStatus @default(PENDING)
+  tier        OrgTier   @default(STARTER)
+
+  kybStatus     KybStatus @default(NOT_SUBMITTED)
+  kybVerifiedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  members    OrganizationMember[]
+  events     Event[]
+  venues     Venue[]
+  promoCodes PromoCode[]
+  payouts    Payout[]
+  auditLogs  AuditLog[]
+  apiKeys    ApiKey[]
+
+  @@index([slug])
+  @@index([status])
+}
+
+enum OrgStatus {
+  PENDING
+  ACTIVE
+  SUSPENDED
+  BANNED
+}
+
+enum OrgTier {
+  STARTER
+  GROWTH
+  PRO
+  ENTERPRISE
+}
+
+enum KybStatus {
+  NOT_SUBMITTED
+  SUBMITTED
+  IN_REVIEW
+  APPROVED
+  REJECTED
+}
+
+model OrganizationMember {
+  id              String       @id @default(cuid())
+  userId          String
+  organizationId  String
+  role            OrgRole
+  status          MemberStatus @default(ACTIVE)
+  invitedByUserId String?
+  invitedAt       DateTime?
+  joinedAt        DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  permissions  Permission[]
+
+  @@unique([userId, organizationId])
+  @@index([userId])
+  @@index([organizationId])
+  @@index([role])
+}
+
+enum OrgRole {
+  OWNER
+  ADMIN
+  EVENT_MANAGER
+  FINANCE
+  SCANNER
+  VIEWER
+}
+
+enum MemberStatus {
+  ACTIVE
+  INVITED
+  SUSPENDED
+  REMOVED
+}
+
+model PlatformUser {
+  id        String       @id @default(cuid())
+  clerkId   String       @unique
+  email     String       @unique
+  name      String?
+  role      PlatformRole
+  isActive  Boolean      @default(true)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  permissions Permission[]
+  auditLogs   AuditLog[]   @relation("PlatformAuditActor")
+
+  @@index([clerkId])
+  @@index([role])
+}
+
+enum PlatformRole {
+  SUPER_ADMIN
+  PLATFORM_ADMIN
+  SUPPORT
+  FINANCE
+  CONTENT_MODERATION
+  FRAUD_RISK
+}
+
+model Permission {
+  id       String             @id @default(cuid())
+  action   PermissionAction
+  resource PermissionResource
+  effect   PermissionEffect   @default(ALLOW)
+
+  orgMemberId    String?
+  platformUserId String?
+
+  orgMember    OrganizationMember? @relation(fields: [orgMemberId], references: [id], onDelete: Cascade)
+  platformUser PlatformUser?       @relation(fields: [platformUserId], references: [id], onDelete: Cascade)
+
+  @@index([orgMemberId])
+  @@index([platformUserId])
+}
+
+enum PermissionAction {
+  READ
+  CREATE
+  UPDATE
+  DELETE
+  PUBLISH
+  APPROVE
+  REFUND
+  BLOCK
+  REISSUE
+  EXPORT
+  MANAGE
+}
+
+enum PermissionResource {
+  EVENTS
+  TICKETS
+  ORDERS
+  FINANCE
+  PAYOUTS
+  PROMO_CODES
+  USERS
+  TEAM
+  SETTINGS
+  ANALYTICS
+  CHECK_IN
+  AUDIT_LOGS
+  VENUES
+  SEAT_MAPS
+}
+
+enum PermissionEffect {
+  ALLOW
+  DENY
+}
+
+// ============================================================
+// DOMAIN: VENUES & SEATING
+// ============================================================
+
+model Venue {
+  id             String   @id @default(cuid())
+  organizationId String?
+  name           String
+  address        String
+  city           String
+  country        String   @default("KZ")
+  capacity       Int?
+  latitude       Float?
+  longitude      Float?
+  description    String?
+  imageUrl       String?
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization? @relation(fields: [organizationId], references: [id])
+  events       Event[]
+  seatMaps     SeatMap[]
+
+  @@index([organizationId])
+  @@index([city])
+}
+
+model SeatMap {
+  id        String   @id @default(cuid())
+  venueId   String
+  name      String
+  svgData   Json?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  venue  Venue   @relation(fields: [venueId], references: [id])
+  zones  Zone[]
+  events Event[]
+
+  @@index([venueId])
+}
+
+model Zone {
+  id         String   @id @default(cuid())
+  seatMapId  String
+  name       String
+  color      String?
+  rowCount   Int?
+  seatCount  Int?
+  isNumbered Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  seatMap     SeatMap      @relation(fields: [seatMapId], references: [id])
+  seats       Seat[]
+  ticketTypes TicketType[]
+
+  @@index([seatMapId])
+}
+
+model Seat {
+  id     String     @id @default(cuid())
+  zoneId String
+  row    String?
+  number String?
+  label  String?
+  status SeatStatus @default(AVAILABLE)
+
+  zone    Zone     @relation(fields: [zoneId], references: [id])
+  tickets Ticket[]
+
+  @@index([zoneId])
+  @@index([status])
+}
+
+enum SeatStatus {
+  AVAILABLE
+  RESERVED
+  SOLD
+  BLOCKED
+  UNAVAILABLE
+}
+
+// ============================================================
+// DOMAIN: EVENTS
+// ============================================================
+
+model Event {
+  id             String  @id @default(cuid())
+  organizationId String?
+  venueId        String
+  seatMapId      String?
+
+  // — Оригинальные поля (совместимость с seed.ts) —
+  title       String
+  description String?
+  category    String?
+  tags        String[]    @default([])
+  date        DateTime
+  doorsOpen   DateTime?
+  ageMin      Int?
+  ageMax      Int?
+  durationMin Int?
+  isOutdoor   Boolean     @default(false)
+  isFeatured  Boolean     @default(false)
+  imageUrl    String?
+  coverUrl    String?
+  status      EventStatus @default(DRAFT)
+  slug        String?     @unique
+
+  // — Новые поля для wizard и админки —
+  shortDesc          String?
+  mood               String[]     @default([])
+  startAt            DateTime?
+  endAt              DateTime?
+  doorsOpenAt        DateTime?
+  timezone           String       @default("Asia/Almaty")
+  bannerUrl          String?
+  galleryUrls        String[]     @default([])
+  isOnlineEvent      Boolean      @default(false)
+  onlineUrl          String?
+  metaTitle          String?
+  metaDesc           String?
+  ageRestriction     Int?
+  refundPolicy       RefundPolicy @default(STANDARD)
+  refundDeadline     DateTime?
+  maxTicketsPerOrder Int          @default(8)
+  requiresApproval   Boolean      @default(false)
+  moderatedAt        DateTime?
+  moderatedById      String?
+  moderationNote     String?
+  rejectedReason     String?
+  totalCapacity      Int          @default(0)
+  soldCount          Int          @default(0)
+  viewCount          Int          @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  venue        Venue         @relation(fields: [venueId], references: [id])
+  seatMap      SeatMap?      @relation(fields: [seatMapId], references: [id])
+  organization Organization? @relation(fields: [organizationId], references: [id])
+  ticketTypes  TicketType[]
+  orders       Order[]
+  auditLogs    AuditLog[]
+  promoCodes   PromoCode[]
+
+  @@index([organizationId])
+  @@index([status])
+  @@index([category])
+  @@index([date])
+  @@index([slug])
+}
+
 enum EventStatus {
   DRAFT
+  PENDING_REVIEW
+  APPROVED
   PUBLISHED
-  CANCELLED
+  PAUSED
+  SOLD_OUT
   COMPLETED
+  CANCELLED
+  ARCHIVED
+  REJECTED
+}
+
+enum RefundPolicy {
+  NO_REFUND
+  STANDARD
+  FLEXIBLE
+  CUSTOM
+}
+
+// ============================================================
+// DOMAIN: TICKET TYPES
+// ============================================================
+
+model TicketType {
+  id      String  @id @default(cuid())
+  eventId String
+  zoneId  String?
+
+  // — Оригинальные поля (совместимость с seed.ts) —
+  name       String
+  price      Decimal  @db.Decimal(10, 2)
+  currency   String   @default("KZT")
+  totalSeats Int
+  soldSeats  Int      @default(0)
+  createdAt  DateTime @default(now())
+
+  // — Новые поля —
+  description      String?
+  reservedQuantity Int       @default(0)
+  saleStartAt      DateTime?
+  saleEndAt        DateTime?
+  earlyBirdPrice   Decimal?  @db.Decimal(10, 2)
+  earlyBirdUntil   DateTime?
+  earlyBirdCount   Int?
+  groupMinSize     Int?
+  groupDiscount    Decimal?  @db.Decimal(5, 2)
+  maxPerOrder      Int       @default(8)
+  minPerOrder      Int       @default(1)
+  isVisible        Boolean   @default(true)
+  requiresPromo    Boolean   @default(false)
+  updatedAt        DateTime  @updatedAt
+
+  event      Event       @relation(fields: [eventId], references: [id])
+  zone       Zone?       @relation(fields: [zoneId], references: [id])
+  orderItems OrderItem[]
+  tickets    Ticket[]
+
+  @@index([eventId])
+  @@index([zoneId])
+}
+
+// ============================================================
+// DOMAIN: ORDERS & PAYMENTS
+// ============================================================
+
+model Order {
+  id             String      @id @default(cuid())
+  userId         String?
+  eventId        String?
+  organizationId String?
+
+  // — Оригинальные поля —
+  totalAmount Decimal     @db.Decimal(10, 2)
+  currency    String      @default("KZT")
+  status      OrderStatus @default(PENDING)
+  stripeId    String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  // — Новые поля —
+  orderNumber     String          @unique @default(cuid())
+  subtotal        Decimal         @db.Decimal(10, 2) @default(0)
+  discountAmount  Decimal         @db.Decimal(10, 2) @default(0)
+  serviceFee      Decimal         @db.Decimal(10, 2) @default(0)
+  promoCodeId     String?
+  buyerEmail      String          @default("")
+  buyerPhone      String?
+  buyerName       String?
+  paymentProvider PaymentProvider?
+  providerOrderId String?
+  providerData    Json?
+  fraudScore      Float?
+  ipAddress       String?
+  userAgent       String?
+  deviceId        String?
+  expiresAt       DateTime?
+  paidAt          DateTime?
+  cancelledAt     DateTime?
+  refundedAt      DateTime?
+
+  user          User?             @relation(fields: [userId], references: [id])
+  event         Event?            @relation(fields: [eventId], references: [id])
+  items         OrderItem[]
+  tickets       Ticket[]
+  payments      Payment[]
+  refunds       Refund[]
+  promoCode     PromoCode?        @relation(fields: [promoCodeId], references: [id])
+  supportNotes  SupportNote[]
+  fraudSignals  FraudSignal[]
+  notifications NotificationLog[]
+
+  @@index([userId])
+  @@index([eventId])
+  @@index([organizationId])
+  @@index([status])
+  @@index([orderNumber])
+  @@index([buyerEmail])
+}
+
+enum OrderStatus {
+  PENDING
+  AWAITING_PAYMENT
+  PAID
+  TICKET_ISSUED
+  FAILED
+  CANCELLED
+  REFUND_REQUESTED
+  REFUNDED
+  PARTIALLY_REFUNDED
+  DISPUTED
+  EXPIRED
+}
+
+enum PaymentProvider {
+  STRIPE
+  KASPI
+  MANUAL
+}
+
+model OrderItem {
+  id           String  @id @default(cuid())
+  orderId      String
+  ticketTypeId String
+  quantity     Int
+  unitPrice    Decimal @db.Decimal(10, 2)
+  totalPrice   Decimal @db.Decimal(10, 2)
+
+  order      Order      @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  ticketType TicketType @relation(fields: [ticketTypeId], references: [id])
+  tickets    Ticket[]
+
+  @@index([orderId])
+  @@index([ticketTypeId])
+}
+
+model Payment {
+  id            String          @id @default(cuid())
+  orderId       String
+  amount        Decimal         @db.Decimal(10, 2)
+  currency      String          @default("KZT")
+  status        PaymentStatus
+  provider      PaymentProvider
+  providerTxId  String?
+  providerData  Json?
+  failureReason String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  order Order @relation(fields: [orderId], references: [id])
+
+  @@index([orderId])
+  @@index([status])
+  @@index([providerTxId])
+}
+
+enum PaymentStatus {
+  PENDING
+  AUTHORIZED
+  CAPTURED
+  FAILED
+  CANCELLED
+  REFUNDED
+}
+
+// ============================================================
+// DOMAIN: TICKETS
+// ============================================================
+
+model Ticket {
+  id           String       @id @default(cuid())
+  orderId      String
+  orderItemId  String?
+  ticketTypeId String
+  eventId      String?
+  userId       String?
+  seatId       String?
+
+  // — Оригинальные поля —
+  qrCode    String       @unique
+  status    TicketStatus @default(VALID)
+  createdAt DateTime     @default(now())
+
+  // — Новые поля —
+  qrSecret          String   @unique @default(cuid())
+  qrVersion         Int      @default(1)
+  eventTitle        String   @default("")
+  eventDate         DateTime @default(now())
+  venueName         String?
+  ticketTypeName    String   @default("")
+  seatLabel         String?
+  price             Decimal  @db.Decimal(10, 2) @default(0)
+  currency          String   @default("KZT")
+  transferredFromId String?
+  transferredAt     DateTime?
+  issuedAt          DateTime?
+  usedAt            DateTime?
+  cancelledAt       DateTime?
+  blockedAt         DateTime?
+  updatedAt         DateTime @updatedAt
+
+  order      Order       @relation(fields: [orderId], references: [id])
+  orderItem  OrderItem?  @relation(fields: [orderItemId], references: [id])
+  ticketType TicketType  @relation(fields: [ticketTypeId], references: [id])
+  seat       Seat?       @relation(fields: [seatId], references: [id])
+  user       User?       @relation(fields: [userId], references: [id])
+  scanLogs   ScanLog[]
+
+  @@index([orderId])
+  @@index([eventId])
+  @@index([userId])
+  @@index([status])
+  @@index([qrSecret])
 }
 
 enum TicketStatus {
@@ -131,11 +614,333 @@ enum TicketStatus {
   USED
   CANCELLED
   REFUNDED
+  BLOCKED
+  REISSUED
+  EXPIRED
 }
 
-enum OrderStatus {
-  PENDING
-  PAID
-  CANCELLED
+model ScanLog {
+  id          String     @id @default(cuid())
+  ticketId    String
+  scannedById String?
+  eventId     String?
+  status      ScanStatus
+  device      String?
+  ipAddress   String?
+  location    String?
+  note        String?
+  createdAt   DateTime   @default(now())
+
+  ticket    Ticket @relation(fields: [ticketId], references: [id])
+  scannedBy User?  @relation(fields: [scannedById], references: [id])
+
+  @@index([ticketId])
+  @@index([eventId])
+  @@index([createdAt])
+}
+
+enum ScanStatus {
+  SUCCESS
+  ALREADY_USED
+  INVALID_QR
+  EXPIRED_QR
+  WRONG_EVENT
+  BLOCKED
   REFUNDED
+}
+
+// ============================================================
+// DOMAIN: REFUNDS
+// ============================================================
+
+model Refund {
+  id               String       @id @default(cuid())
+  orderId          String
+  ticketIds        String[]
+  amount           Decimal      @db.Decimal(10, 2)
+  reason           String?
+  status           RefundStatus @default(REQUESTED)
+  requestedById    String?
+  processedById    String?
+  providerRefundId String?
+  providerData     Json?
+  requestedAt      DateTime     @default(now())
+  processedAt      DateTime?
+
+  order Order @relation(fields: [orderId], references: [id])
+
+  @@index([orderId])
+  @@index([status])
+}
+
+enum RefundStatus {
+  REQUESTED
+  IN_REVIEW
+  APPROVED
+  REJECTED
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+// ============================================================
+// DOMAIN: FINANCE
+// ============================================================
+
+model Payout {
+  id               String       @id @default(cuid())
+  organizationId   String
+  periodStart      DateTime
+  periodEnd        DateTime
+  status           PayoutStatus @default(PENDING)
+  grossAmount      Decimal      @db.Decimal(12, 2)
+  platformFee      Decimal      @db.Decimal(12, 2)
+  processingFee    Decimal      @db.Decimal(12, 2)
+  netAmount        Decimal      @db.Decimal(12, 2)
+  bankName         String?
+  bankAccount      String?
+  bankBic          String?
+  recipientName    String?
+  providerPayoutId String?
+  notes            String?
+  processedById    String?
+  scheduledAt      DateTime?
+  processedAt      DateTime?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+
+  @@index([organizationId])
+  @@index([status])
+}
+
+enum PayoutStatus {
+  PENDING
+  SCHEDULED
+  PROCESSING
+  COMPLETED
+  FAILED
+  ON_HOLD
+}
+
+// ============================================================
+// DOMAIN: PROMO & MARKETING
+// ============================================================
+
+model PromoCode {
+  id             String    @id @default(cuid())
+  organizationId String
+  eventId        String?
+  code           String    @unique
+  type           PromoType
+  discountValue  Decimal   @db.Decimal(10, 2)
+  maxUses        Int?
+  usedCount      Int       @default(0)
+  maxUsesPerUser Int       @default(1)
+  validFrom      DateTime?
+  validUntil     DateTime?
+  isActive       Boolean   @default(true)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  event        Event?       @relation(fields: [eventId], references: [id])
+  orders       Order[]
+
+  @@index([code])
+  @@index([organizationId])
+  @@index([eventId])
+}
+
+enum PromoType {
+  PERCENTAGE
+  FIXED_AMOUNT
+  FREE_TICKET
+  EARLY_BIRD
+  VIP_ACCESS
+}
+
+// ============================================================
+// DOMAIN: AUDIT & COMPLIANCE
+// ============================================================
+
+model AuditLog {
+  id              String   @id @default(cuid())
+  actorUserId     String?
+  actorPlatformId String?
+  actorRole       String?
+  organizationId  String?
+  action          String
+  entityType      String
+  entityId        String
+  before          Json?
+  after           Json?
+  ipAddress       String?
+  userAgent       String?
+  metadata        Json?
+  createdAt       DateTime @default(now())
+
+  actorUser     User?          @relation("AuditActor", fields: [actorUserId], references: [id])
+  actorPlatform PlatformUser?  @relation("PlatformAuditActor", fields: [actorPlatformId], references: [id])
+  organization  Organization?  @relation(fields: [organizationId], references: [id])
+  event         Event?         @relation(fields: [entityId], references: [id], map: "audit_event_fk")
+
+  @@index([actorUserId])
+  @@index([actorPlatformId])
+  @@index([organizationId])
+  @@index([entityType, entityId])
+  @@index([action])
+  @@index([createdAt])
+}
+
+// ============================================================
+// DOMAIN: FRAUD & RISK
+// ============================================================
+
+model FraudSignal {
+  id           String            @id @default(cuid())
+  orderId      String?
+  userId       String?
+  type         FraudType
+  severity     FraudSeverity
+  description  String
+  metadata     Json?
+  status       FraudSignalStatus @default(OPEN)
+  reviewedById String?
+  reviewNote   String?
+  resolvedAt   DateTime?
+  createdAt    DateTime          @default(now())
+
+  order Order? @relation(fields: [orderId], references: [id])
+  user  User?  @relation(fields: [userId], references: [id])
+
+  @@index([orderId])
+  @@index([userId])
+  @@index([status])
+  @@index([severity])
+}
+
+enum FraudType {
+  MULTIPLE_CARDS_ONE_IP
+  EXCESSIVE_PURCHASE_VELOCITY
+  MULTIPLE_FAILURES
+  BULK_TICKET_PURCHASE
+  COUNTRY_MISMATCH
+  SUSPICIOUS_EMAIL
+  REPEAT_CHARGEBACKS
+  QR_SCREENSHOT_ATTEMPT
+  DUPLICATE_SCAN
+  INVALID_PROMO_ABUSE
+}
+
+enum FraudSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum FraudSignalStatus {
+  OPEN
+  UNDER_REVIEW
+  RESOLVED_LEGIT
+  RESOLVED_FRAUD
+  ESCALATED
+}
+
+// ============================================================
+// DOMAIN: SUPPORT & COMMS
+// ============================================================
+
+model SupportNote {
+  id         String   @id @default(cuid())
+  orderId    String
+  authorId   String
+  content    String
+  isInternal Boolean  @default(true)
+  createdAt  DateTime @default(now())
+
+  order  Order @relation(fields: [orderId], references: [id])
+  author User  @relation("SupportAuthor", fields: [authorId], references: [id])
+
+  @@index([orderId])
+}
+
+model NotificationLog {
+  id         String       @id @default(cuid())
+  orderId    String?
+  userId     String?
+  channel    NotifChannel
+  type       NotifType
+  recipient  String
+  status     NotifStatus  @default(PENDING)
+  provider   String?
+  providerId String?
+  error      String?
+  sentAt     DateTime?
+  createdAt  DateTime     @default(now())
+
+  order Order? @relation(fields: [orderId], references: [id])
+
+  @@index([orderId])
+  @@index([userId])
+  @@index([status])
+}
+
+enum NotifChannel {
+  EMAIL
+  SMS
+  WHATSAPP
+  PUSH
+}
+
+enum NotifType {
+  TICKET_ISSUED
+  ORDER_CONFIRMED
+  ORDER_CANCELLED
+  REFUND_PROCESSED
+  EVENT_REMINDER
+  EVENT_CANCELLED
+  EVENT_RESCHEDULED
+  PAYMENT_FAILED
+  WAITLIST_AVAILABLE
+}
+
+enum NotifStatus {
+  PENDING
+  SENT
+  FAILED
+  BOUNCED
+}
+
+// ============================================================
+// DOMAIN: PLATFORM SETTINGS
+// ============================================================
+
+model ApiKey {
+  id             String    @id @default(cuid())
+  organizationId String
+  name           String
+  keyHash        String    @unique
+  prefix         String
+  permissions    String[]
+  lastUsedAt     DateTime?
+  expiresAt      DateTime?
+  isActive       Boolean   @default(true)
+  createdAt      DateTime  @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+
+  @@index([organizationId])
+  @@index([keyHash])
+}
+
+model FeatureFlag {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  value       Boolean  @default(false)
+  description String?
+  orgIds      String[]
+  updatedAt   DateTime @updatedAt
 }
