@@ -1,5 +1,6 @@
 import { requireAuth } from '@/lib/auth/require-auth'
 import DashboardShell from '@/components/dashboard/DashboardShell'
+import ThemeWrapper from '@/components/dashboard/ThemeWrapper'
 
 export default async function ShellLayout({
   children,
@@ -7,5 +8,9 @@ export default async function ShellLayout({
   children: React.ReactNode
 }) {
   const ctx = await requireAuth()
-  return <DashboardShell ctx={ctx}>{children}</DashboardShell>
+  return (
+    <ThemeWrapper>
+      <DashboardShell ctx={ctx}>{children}</DashboardShell>
+    </ThemeWrapper>
+  )
 }

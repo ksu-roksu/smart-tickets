@@ -1,25 +1,29 @@
+import { requirePermission } from '@/lib/rbac/requirePermission'
+import { prisma } from '@/lib/prisma'
 import { requireAuth } from '@/lib/auth/require-auth'
 import EventsClient from './EventsClient'
 
 export default async function EventsPage() {
   const ctx = await requireAuth()
+requirePermission(ctx, 'events:view')
 
-  const params = new URLSearchParams()
-  if (!ctx.isPlatformUser && ctx.organizationId) {
-    // фильтр по организации происходит в API через resolveUser
-  }
+  const where = ctx.isPlatformUser
+    ? {}
+    : { organizationId: ctx.organizationId ?? '__none__' }
 
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'}/api/dashboard/events?limit=50`,
-    { cache: 'no-store' }
-  )
+  const events = await prisma.event.findMany({
+    where,
+    orderBy: { createdAt: 'desc' },
+    take: 50,
+    include: {
+      venue: { select: { name: true, city: true } },
+    },
+  })
 
-  const json = res.ok ? await res.json() : { data: [] }
-
-  const events = (json.data ?? []).map((e: any) => ({
+  const mapped = events.map((e) => ({
     id: e.id,
     title: e.title,
-    date: new Date(e.date ?? e.startAt).toLocaleDateString('ru-KZ', {
+    date: new Date(e.date ?? e.startAt ?? new Date()).toLocaleDateString('ru-KZ', {
       day: 'numeric', month: 'long', year: 'numeric',
     }),
     venue: e.venue?.name ?? '—',
@@ -30,5 +34,5 @@ export default async function EventsPage() {
     total: e.totalCapacity ?? 0,
   }))
 
-  return <EventsClient events={events} />
+  return <EventsClient events={mapped} />
 }

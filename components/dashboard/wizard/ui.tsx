@@ -1,8 +1,5 @@
 'use client'
 
-// ─── Wizard UI primitives — inline styles, точно по прототипу ───
-// Используем CSS переменные напрямую, без Tailwind
-
 import type React from 'react'
 import type { WizardData } from './types'
 
@@ -13,264 +10,238 @@ export interface StepProps {
   onPrev: () => void
 }
 
-// ── Общие стили (зеркало прототипа) ──────────────────────────
-
 const S = {
   section: {
-    background: 'var(--color-background-primary)',
-    border: '1px solid #6B7280',
-    borderRadius: 12,
+    background: '#111',
+    border: '1px solid rgba(255,255,255,0.06)',
+    borderRadius: 18,
     overflow: 'hidden',
-    marginBottom: 10,
+    marginBottom: 14,
+    boxShadow: '0 12px 40px rgba(0,0,0,0.18)',
   } as React.CSSProperties,
 
   sectionHead: {
-    padding: '16px 20px 0',
+    padding: '22px 24px 0',
   } as React.CSSProperties,
 
   sectionBody: {
-    padding: '0 20px 20px',
+    padding: '0 24px 24px',
   } as React.CSSProperties,
 
   sTitle: {
-    fontSize: 14,
-    fontWeight: 500,
-    color: 'var(--color-text-primary)',
-    marginBottom: 2,
+    fontSize: 16,
+    fontWeight: 700,
+    color: 'rgba(255,255,255,0.92)',
+    marginBottom: 4,
     lineHeight: 1.3,
+    letterSpacing: '-0.02em',
   } as React.CSSProperties,
 
   sDesc: {
-    fontSize: 12,
-    color: 'var(--color-text-secondary)',
-    marginBottom: 14,
-    lineHeight: 1.4,
+    fontSize: 13,
+    color: 'rgba(255,255,255,0.35)',
+    marginBottom: 18,
+    lineHeight: 1.5,
   } as React.CSSProperties,
 
   label: {
     fontSize: 11,
-    fontWeight: 500,
-    color: 'var(--color-text-secondary)',
+    fontWeight: 700,
+    color: 'rgba(255,255,255,0.42)',
     textTransform: 'uppercase' as const,
-    letterSpacing: '0.05em',
-    marginBottom: 5,
+    letterSpacing: '0.06em',
+    marginBottom: 7,
     display: 'flex',
     alignItems: 'center',
-    gap: 3,
+    gap: 5,
   } as React.CSSProperties,
 
   req: {
-    color: '#E24B4A',
-    fontSize: 11,
+    color: '#F97316',
+    fontSize: 12,
     lineHeight: 1,
   } as React.CSSProperties,
 
   input: {
-  width: '100%',
-  height: 42,
-  padding: '0 14px',
-  fontSize: 14,
-  fontFamily: 'var(--font-sans)',
-  border: '1.5px solid var(--color-border-secondary)',
-  borderRadius: 12,
-  background: 'var(--color-background-primary)',
-  color: 'var(--color-text-primary)',
-  transition: 'border 0.15s, box-shadow 0.15s',
-  outline: 'none',
-  boxSizing: 'border-box' as const,
-} as React.CSSProperties,
+    width: '100%',
+    height: 46,
+    padding: '0 15px',
+    fontSize: 14,
+    fontFamily: 'var(--font-sans)',
+    border: '1px solid rgba(255,255,255,0.08)',
+    borderRadius: 14,
+    background: 'rgba(255,255,255,0.04)',
+    color: 'rgba(255,255,255,0.82)',
+    transition: 'border 0.15s, box-shadow 0.15s, background 0.15s',
+    outline: 'none',
+    boxSizing: 'border-box' as const,
+  } as React.CSSProperties,
 
-inputFilled: {
-  borderColor: 'var(--color-border-primary)',
-} as React.CSSProperties,
+  inputFilled: {
+    borderColor: 'rgba(255,255,255,0.14)',
+    background: 'rgba(255,255,255,0.055)',
+  } as React.CSSProperties,
 
-inputError: {
-  borderColor: 'var(--color-danger)',
-  boxShadow: '0 0 0 3px rgba(226,75,74,0.12)',
-} as React.CSSProperties,
+  inputError: {
+    borderColor: 'rgba(239,68,68,0.45)',
+    boxShadow: '0 0 0 3px rgba(239,68,68,0.12)',
+  } as React.CSSProperties,
 
   textarea: {
-  width: '100%',
-  padding: '10px 14px',
-  fontSize: 14,
-  fontFamily: 'var(--font-sans)',
-  border: '1.5px solid var(--color-border-secondary)',
-  borderRadius: 12,
-  background: 'var(--color-background-primary)',
-  color: 'var(--color-text-primary)',
-  resize: 'vertical' as const,
-  minHeight: 96,
-  transition: 'border 0.15s, box-shadow 0.15s',
-  lineHeight: 1.5,
-  outline: 'none',
-  boxSizing: 'border-box' as const,
-} as React.CSSProperties,
+    width: '100%',
+    padding: '13px 15px',
+    fontSize: 14,
+    fontFamily: 'var(--font-sans)',
+    border: '1px solid rgba(255,255,255,0.08)',
+    borderRadius: 14,
+    background: 'rgba(255,255,255,0.04)',
+    color: 'rgba(255,255,255,0.82)',
+    resize: 'vertical' as const,
+    minHeight: 120,
+    transition: 'border 0.15s, box-shadow 0.15s, background 0.15s',
+    lineHeight: 1.5,
+    outline: 'none',
+    boxSizing: 'border-box' as const,
+  } as React.CSSProperties,
 
   select: {
-  width: '100%',
-  height: 42,
-  padding: '0 14px',
-  fontSize: 13,
-  fontFamily: 'var(--font-sans)',
-  border: '1.5px solid var(--color-border-secondary)',
-  borderRadius: 12,
-  background: 'var(--color-background-primary)',
-  color: 'var(--color-text-primary)',
-  cursor: 'pointer',
-  outline: 'none',
-  boxSizing: 'border-box' as const,
-  transition: 'border 0.15s',
-} as React.CSSProperties,
+    width: '100%',
+    height: 46,
+    padding: '0 15px',
+    fontSize: 14,
+    fontFamily: 'var(--font-sans)',
+    border: '1px solid rgba(255,255,255,0.08)',
+    borderRadius: 14,
+    background: '#171717',
+    color: 'rgba(255,255,255,0.82)',
+    cursor: 'pointer',
+    outline: 'none',
+    boxSizing: 'border-box' as const,
+    transition: 'border 0.15s, background 0.15s',
+  } as React.CSSProperties,
 
   hint: {
-    fontSize: 11,
-    color: 'var(--color-text-tertiary)',
-    marginTop: 4,
+    fontSize: 12,
+    color: 'rgba(255,255,255,0.25)',
+    marginTop: 6,
     lineHeight: 1.4,
   } as React.CSSProperties,
 
   errText: {
-    fontSize: 11,
-    color: '#E24B4A',
-    marginTop: 4,
+    fontSize: 12,
+    color: '#F87171',
+    marginTop: 6,
     display: 'flex',
     alignItems: 'center',
-    gap: 4,
+    gap: 5,
     lineHeight: 1.4,
   } as React.CSSProperties,
 
   char: {
-    fontSize: 10,
-    color: 'var(--color-text-tertiary)',
+    fontSize: 11,
+    color: 'rgba(255,255,255,0.25)',
     textAlign: 'right' as const,
-    marginTop: 3,
+    marginTop: 5,
   } as React.CSSProperties,
 
   charWarn: {
-    color: '#BA7517',
+    color: '#F97316',
   } as React.CSSProperties,
 
   field: {
-    marginBottom: 16,
+    marginBottom: 18,
   } as React.CSSProperties,
 
   badge: {
     fontSize: 9,
-    fontWeight: 500,
-    padding: '2px 5px',
-    borderRadius: 4,
-    background: '#EEEDFE',
-    color: '#534AB7',
+    fontWeight: 700,
+    padding: '2px 6px',
+    borderRadius: 6,
+    background: 'rgba(249,115,22,0.10)',
+    color: '#FB923C',
+    border: '1px solid rgba(249,115,22,0.22)',
     letterSpacing: '0.04em',
     textTransform: 'uppercase' as const,
     marginLeft: 6,
-    verticalAlign: 'middle',
   } as React.CSSProperties,
 
   badgeSeo: {
     fontSize: 9,
-    fontWeight: 500,
-    padding: '2px 5px',
-    borderRadius: 4,
-    background: '#E1F5EE',
-    color: '#0F6E56',
+    fontWeight: 700,
+    padding: '2px 6px',
+    borderRadius: 6,
+    background: 'rgba(16,185,129,0.10)',
+    color: '#34D399',
+    border: '1px solid rgba(16,185,129,0.22)',
     letterSpacing: '0.04em',
     textTransform: 'uppercase' as const,
     marginLeft: 6,
-    verticalAlign: 'middle',
   } as React.CSSProperties,
 
   grid2: {
     display: 'grid',
     gridTemplateColumns: '1fr 1fr',
-    gap: 12,
+    gap: 14,
   } as React.CSSProperties,
 
   grid3: {
     display: 'grid',
     gridTemplateColumns: '1fr 1fr 1fr',
-    gap: 10,
+    gap: 12,
   } as React.CSSProperties,
 
   divider: {
     border: 'none',
-    borderTop: '0.5px solid var(--color-border-tertiary)',
-    margin: '16px 0',
+    borderTop: '1px solid rgba(255,255,255,0.06)',
+    margin: '18px 0',
   } as React.CSSProperties,
 
   toggleRow: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: '14px 0',
-    borderTop: '0.5px solid var(--color-border-tertiary)',
+    padding: '16px 0',
+    borderTop: '1px solid rgba(255,255,255,0.06)',
   } as React.CSSProperties,
 
   tglLbl: {
-    fontSize: 13,
-    color: 'var(--color-text-primary)',
+    fontSize: 14,
+    color: 'rgba(255,255,255,0.82)',
     lineHeight: 1.3,
+    fontWeight: 600,
   } as React.CSSProperties,
 
   tglDesc: {
-    fontSize: 11,
-    color: 'var(--color-text-secondary)',
-    marginTop: 2,
+    fontSize: 12,
+    color: 'rgba(255,255,255,0.35)',
+    marginTop: 3,
     lineHeight: 1.4,
-  } as React.CSSProperties,
-
-  btnBack: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 6,
-    padding: '9px 16px',
-    fontSize: 13,
-    border: '1px solid var(--color-border-secondary)',
-    borderRadius: 8,
-    color: 'var(--color-text-secondary)',
-    background: 'transparent',
-    cursor: 'pointer',
-    opacity: 0.35,
-  } as React.CSSProperties,
-
-  btnNext: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 6,
-    padding: '9px 22px',
-    fontSize: 13,
-    fontWeight: 500,
-    borderRadius: 8,
-    background: 'var(--color-text-primary)',
-    color: 'var(--color-background-primary)',
-    border: 'none',
-    cursor: 'pointer',
   } as React.CSSProperties,
 
   tagsInput: {
     display: 'flex',
     flexWrap: 'wrap' as const,
     alignItems: 'center',
-    minHeight: 38,
-    padding: '4px 8px',
-    border: '1.5px solid #6B7280',
-    borderRadius: 8,
-    gap: 4,
+    minHeight: 42,
+    padding: '6px 10px',
+    border: '1px solid rgba(255,255,255,0.08)',
+    borderRadius: 14,
+    gap: 6,
     cursor: 'text',
-    background: 'var(--color-background-primary)',
+    background: 'rgba(255,255,255,0.04)',
     boxSizing: 'border-box' as const,
   } as React.CSSProperties,
 
   inlineTag: {
     display: 'inline-flex',
     alignItems: 'center',
-    gap: 5,
-    padding: '3px 8px 3px 10px',
-    background: 'var(--color-background-secondary)',
-    border: '0.5px solid var(--color-border-secondary)',
-    borderRadius: 20,
+    gap: 6,
+    padding: '4px 9px',
+    background: 'rgba(249,115,22,0.10)',
+    border: '1px solid rgba(249,115,22,0.22)',
+    borderRadius: 999,
     fontSize: 12,
-    color: 'var(--color-text-primary)',
+    color: '#FB923C',
   } as React.CSSProperties,
 }
 
@@ -282,18 +253,16 @@ export function InfoTip({ text }: { text: string }) {
       title={text}
       aria-label={text}
       style={{
-        width: 15,
-        height: 15,
+        width: 16,
+        height: 16,
         borderRadius: '50%',
         display: 'inline-flex',
         alignItems: 'center',
         justifyContent: 'center',
-        border: '1px solid var(--color-border-secondary)',
-        color: 'var(--color-text-tertiary)',
+        border: '1px solid rgba(255,255,255,0.10)',
+        color: 'rgba(255,255,255,0.30)',
         fontSize: 10,
         fontWeight: 700,
-        textTransform: 'none',
-        letterSpacing: 0,
         cursor: 'help',
         flexShrink: 0,
       }}
@@ -302,8 +271,6 @@ export function InfoTip({ text }: { text: string }) {
     </span>
   )
 }
-
-// ── Section ───────────────────────────────────────────────────
 
 export function Section({
   title,
@@ -334,8 +301,6 @@ export function Section({
   )
 }
 
-// ── Field ─────────────────────────────────────────────────────
-
 export function Field({
   label,
   hint,
@@ -362,9 +327,7 @@ export function Field({
       <div style={S.label}>
         {label}
         {required && <span style={S.req}>*</span>}
-        {badge && (
-          <span style={badgeType === 'seo' ? S.badgeSeo : S.badge}>{badge}</span>
-        )}
+        {badge && <span style={badgeType === 'seo' ? S.badgeSeo : S.badge}>{badge}</span>}
         {info && <InfoTip text={info} />}
       </div>
       {children}
@@ -378,8 +341,6 @@ export function Field({
     </div>
   )
 }
-
-// ── Input ─────────────────────────────────────────────────────
 
 export function Input({
   value,
@@ -403,11 +364,7 @@ export function Input({
   style?: React.CSSProperties
 }) {
   const filled = String(value).length > 0
-  const borderStyle = hasError
-    ? S.inputError
-    : filled
-    ? S.inputFilled
-    : {}
+  const borderStyle = hasError ? S.inputError : filled ? S.inputFilled : {}
 
   return (
     <input
@@ -421,24 +378,25 @@ export function Input({
       style={{
         ...S.input,
         ...borderStyle,
+        ...(disabled ? { opacity: 0.45, cursor: 'not-allowed' } : {}),
         ...style,
+      }}
+      onFocus={e => {
+        e.currentTarget.style.borderColor = 'rgba(249,115,22,0.45)'
+        e.currentTarget.style.boxShadow = '0 0 0 3px rgba(249,115,22,0.10)'
+      }}
+      onBlur={e => {
+        e.currentTarget.style.borderColor = filled ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.08)'
+        e.currentTarget.style.boxShadow = 'none'
       }}
     />
   )
 }
 
-// ── CharCount ─────────────────────────────────────────────────
-
 export function CharCount({ current, max }: { current: number; max: number }) {
   const warn = current > max * 0.85
-  return (
-    <div style={{ ...S.char, ...(warn ? S.charWarn : {}) }}>
-      {current} / {max}
-    </div>
-  )
+  return <div style={{ ...S.char, ...(warn ? S.charWarn : {}) }}>{current} / {max}</div>
 }
-
-// ── Textarea ──────────────────────────────────────────────────
 
 export function Textarea({
   value,
@@ -458,11 +416,17 @@ export function Textarea({
       placeholder={placeholder}
       rows={rows}
       style={S.textarea}
+      onFocus={e => {
+        e.currentTarget.style.borderColor = 'rgba(249,115,22,0.45)'
+        e.currentTarget.style.boxShadow = '0 0 0 3px rgba(249,115,22,0.10)'
+      }}
+      onBlur={e => {
+        e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'
+        e.currentTarget.style.boxShadow = 'none'
+      }}
     />
   )
 }
-
-// ── Select ────────────────────────────────────────────────────
 
 export function Select({
   value,
@@ -476,7 +440,17 @@ export function Select({
   placeholder?: string
 }) {
   return (
-    <select value={value} onChange={e => onChange(e.target.value)} style={S.select}>
+    <select
+      value={value}
+      onChange={e => onChange(e.target.value)}
+      style={S.select}
+      onFocus={e => {
+        e.currentTarget.style.borderColor = 'rgba(249,115,22,0.45)'
+      }}
+      onBlur={e => {
+        e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'
+      }}
+    >
       {placeholder && <option value="">{placeholder}</option>}
       {options.map(o => (
         <option key={o.value} value={o.value}>{o.label}</option>
@@ -484,8 +458,6 @@ export function Select({
     </select>
   )
 }
-
-// ── Toggle ────────────────────────────────────────────────────
 
 export function Toggle({
   checked,
@@ -511,18 +483,22 @@ export function Toggle({
       }}
     >
       <div>
-        <div style={{ ...S.tglLbl, display: 'flex', alignItems: 'center', gap: 6 }}>{label}{info && <InfoTip text={info} />}</div>
+        <div style={{ ...S.tglLbl, display: 'flex', alignItems: 'center', gap: 6 }}>
+          {label}{info && <InfoTip text={info} />}
+        </div>
         {description && <div style={S.tglDesc}>{description}</div>}
       </div>
+
       <div
         style={{
-          width: 34,
-          height: 20,
-          borderRadius: 10,
-          background: checked ? '#1D9E75' : 'var(--color-border-secondary)',
+          width: 38,
+          height: 22,
+          borderRadius: 999,
+          background: checked ? '#F97316' : 'rgba(255,255,255,0.10)',
           position: 'relative',
           flexShrink: 0,
           transition: 'background 0.15s',
+          border: '1px solid rgba(255,255,255,0.08)',
         }}
       >
         <input
@@ -534,14 +510,14 @@ export function Toggle({
         <div
           style={{
             position: 'absolute',
-            width: 16,
-            height: 16,
+            width: 18,
+            height: 18,
             borderRadius: '50%',
             background: '#fff',
-            top: 2,
-            left: 2,
+            top: 1,
+            left: 1,
             transition: 'transform 0.15s',
-            transform: checked ? 'translateX(14px)' : 'translateX(0)',
+            transform: checked ? 'translateX(16px)' : 'translateX(0)',
           }}
         />
       </div>
@@ -549,26 +525,16 @@ export function Toggle({
   )
 }
 
-// ── ChipPicker (mood) ─────────────────────────────────────────
-
 export function ChipPicker({
   options,
   selected,
   onChange,
   max,
-  activeColor = '#185FA5',
-  activeBg = '#E6F1FB',
-  activeTextColor = '#0C447C',
-  activeBorderColor = '#185FA5',
 }: {
   options: { value: string; label: string }[]
   selected: string[]
   onChange: (v: string[]) => void
   max?: number
-  activeColor?: string
-  activeBg?: string
-  activeTextColor?: string
-  activeBorderColor?: string
 }) {
   const toggle = (v: string) => {
     if (selected.includes(v)) {
@@ -579,23 +545,24 @@ export function ChipPicker({
   }
 
   return (
-    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
       {options.map(o => {
         const on = selected.includes(o.value)
         const maxed = !on && !!max && selected.length >= max
+
         return (
           <button
             key={o.value}
             type="button"
             onClick={() => !maxed && toggle(o.value)}
             style={{
-              padding: '6px 13px',
-              border: `1px solid ${on ? activeBorderColor : 'var(--color-border-tertiary)'}`,
-              borderRadius: 20,
+              padding: '7px 13px',
+              border: `1px solid ${on ? 'rgba(249,115,22,0.35)' : 'rgba(255,255,255,0.08)'}`,
+              borderRadius: 999,
               fontSize: 12,
-              color: on ? activeTextColor : 'var(--color-text-secondary)',
-              background: on ? activeBg : 'transparent',
-              fontWeight: on ? 500 : 400,
+              color: on ? '#FB923C' : 'rgba(255,255,255,0.38)',
+              background: on ? 'rgba(249,115,22,0.10)' : 'rgba(255,255,255,0.03)',
+              fontWeight: on ? 600 : 400,
               cursor: maxed ? 'not-allowed' : 'pointer',
               opacity: maxed ? 0.4 : 1,
               lineHeight: 1.4,
@@ -609,8 +576,6 @@ export function ChipPicker({
     </div>
   )
 }
-
-// ── TagInput ──────────────────────────────────────────────────
 
 export function TagInput({
   tags,
@@ -634,22 +599,31 @@ export function TagInput({
           {t}
           <button
             onClick={() => remove(t)}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center' }}
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: 0,
+              display: 'flex',
+              alignItems: 'center',
+              color: '#FB923C',
+            }}
             aria-label={`Удалить тег ${t}`}
           >
-            <i className="ti ti-x" style={{ fontSize: 10, color: 'var(--color-text-tertiary)' }} aria-hidden="true" />
+            ×
           </button>
         </span>
       ))}
+
       <input
         style={{
           border: 'none',
           outline: 'none',
           fontSize: 13,
-          color: 'var(--color-text-primary)',
+          color: 'rgba(255,255,255,0.82)',
           background: 'transparent',
           minWidth: 80,
-          height: 26,
+          height: 28,
           fontFamily: 'var(--font-sans)',
         }}
         placeholder={tags.length === 0 ? placeholder : ''}
@@ -668,8 +642,6 @@ export function TagInput({
   )
 }
 
-// ── WizardNav ─────────────────────────────────────────────────
-
 export function WizardNav(_props: {
   onPrev: () => void
   onNext: () => void
@@ -678,18 +650,12 @@ export function WizardNav(_props: {
   nextDisabled?: boolean
   loading?: boolean
 }) {
-  // Навигация теперь живёт в едином нижнем action bar страницы.
-  // Оставляем компонент для совместимости шагов, но не рендерим дублирующие кнопки.
   return null
 }
-
-// ── Divider ───────────────────────────────────────────────────
 
 export function Divider() {
   return <hr style={S.divider} />
 }
-
-// ── Grid helpers ──────────────────────────────────────────────
 
 export function Grid2({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
   return <div style={{ ...S.grid2, ...style }}>{children}</div>
@@ -699,13 +665,19 @@ export function Grid3({ children, style }: { children: React.ReactNode; style?: 
   return <div style={{ ...S.grid3, ...style }}>{children}</div>
 }
 
-
-// Backward-compatible names used by wizard steps
 export function WizardCard({ children }: { children: React.ReactNode }) {
-  return <div style={{ ...S.section, boxShadow: '0 1px 0 rgba(0,0,0,0.02)' }}>{children}</div>
+  return <div style={S.section}>{children}</div>
 }
 
-export function WizardSection({ title, description, children }: { title?: string; description?: string; children: React.ReactNode }) {
+export function WizardSection({
+  title,
+  description,
+  children,
+}: {
+  title?: string
+  description?: string
+  children: React.ReactNode
+}) {
   return (
     <>
       {(title || description) && (
