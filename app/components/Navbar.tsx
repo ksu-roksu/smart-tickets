@@ -100,20 +100,12 @@ function CityDropdown({ city, setCity }: { city: string; setCity: (c: string) =>
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (savedLang) setLang(savedLang);
-    const savedTheme = localStorage.getItem('st_theme') as 'dark' | 'light' | null;
-
-if (savedTheme) {
-  setTheme(savedTheme);
-  document.documentElement.classList.toggle('dark', savedTheme === 'dark');
-}
     const handler = (e: MouseEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
     };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, []);
-
   const detectCity = () => {
     if (!navigator.geolocation) return;
     setGeoLoading(true);
@@ -172,14 +164,6 @@ if (savedTheme) {
 function LangSelector({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-    };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, []);
 
   return (
     <div ref={ref} className="relative">
@@ -414,6 +398,8 @@ useEffect(() => {
 
         <div className="flex-1" />
 
+        <div className="flex-1" />
+
         <div className="flex items-center gap-1.5">
           {mounted && (
             <button
@@ -421,8 +407,8 @@ useEffect(() => {
               className="w-[34px] h-[34px] rounded-full bg-white/7 hover:bg-white/12 border border-white/10 flex items-center justify-center text-white/60 transition-colors"
               aria-label="Сменить тему"
             >
-              {isDark ? <Sun size={15} /> : <Moon size={15} />}{theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
-              button>
+              {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
+            </button>
           )}
 
           <LangSelector lang={lang} setLang={setLang} />
@@ -468,10 +454,10 @@ useEffect(() => {
 
         {mounted && (
           <button
-            onClick={() => setTheme(isDark ? 'light' : 'dark')}
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
             className="w-8 h-8 rounded-full bg-white/7 border border-white/10 flex items-center justify-center text-white/60"
           >
-            {isDark ? <Sun size={14} /> : <Moon size={14} />}
+            {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
           </button>
         )}
 

@@ -24,18 +24,18 @@ export default async function OrganizerPage() {
   );
 
   return (
-    <main className="min-h-screen bg-black text-white">
-      <nav className="flex items-center justify-between px-8 py-5 border-b border-white/10">
+    <main className="min-h-screen bg-black text-[var(--color-text-primary)]">
+      <nav className="flex items-center justify-between px-8 py-5 border-b border-[var(--dash-card-border)]">
         <Link href="/" className="text-xl font-bold tracking-tight">
           Smart Tickets
         </Link>
         <div className="flex items-center gap-4">
-          <Link href="/dashboard" className="text-sm text-white/60 hover:text-white transition">
+          <Link href="/dashboard" className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition">
             ← Личный кабинет
           </Link>
           <Link
             href="/dashboard/organizer/create"
-            className="text-sm bg-white text-black px-4 py-2 rounded-full hover:bg-white/90 transition"
+            className="text-sm bg-white text-black px-4 py-2 rounded-full hover:bg-[var(--color-background-secondary)] transition"
           >
             + Создать событие
           </Link>
@@ -44,20 +44,20 @@ export default async function OrganizerPage() {
 
       <div className="max-w-5xl mx-auto px-8 py-12">
         <h1 className="text-4xl font-bold mb-2">Панель организатора</h1>
-        <p className="text-white/40 mb-10">Smart Kazakhstan</p>
+        <p className="text-[var(--color-text-secondary)] mb-10">Smart Kazakhstan</p>
 
         {/* Статистика */}
         <div className="grid grid-cols-3 gap-4 mb-12">
-          <div className="border border-white/10 rounded-2xl p-6">
-            <p className="text-white/40 text-sm mb-1">Всего событий</p>
+          <div className="border border-[var(--dash-card-border)] rounded-2xl p-6">
+            <p className="text-[var(--color-text-secondary)] text-sm mb-1">Всего событий</p>
             <p className="text-4xl font-bold">{events.length}</p>
           </div>
-          <div className="border border-white/10 rounded-2xl p-6">
-            <p className="text-white/40 text-sm mb-1">Продано билетов</p>
+          <div className="border border-[var(--dash-card-border)] rounded-2xl p-6">
+            <p className="text-[var(--color-text-secondary)] text-sm mb-1">Продано билетов</p>
             <p className="text-4xl font-bold">{totalSold}</p>
           </div>
-          <div className="border border-white/10 rounded-2xl p-6">
-            <p className="text-white/40 text-sm mb-1">Выручка</p>
+          <div className="border border-[var(--dash-card-border)] rounded-2xl p-6">
+            <p className="text-[var(--color-text-secondary)] text-sm mb-1">Выручка</p>
             <p className="text-4xl font-bold">{totalRevenue.toLocaleString("ru-RU")} ₸</p>
           </div>
         </div>
@@ -72,11 +72,11 @@ export default async function OrganizerPage() {
             const percent = total > 0 ? Math.round((sold / total) * 100) : 0;
 
             return (
-              <div key={event.id} className="border border-white/10 rounded-2xl p-6 hover:border-white/20 transition">
+              <div key={event.id} className="border border-[var(--dash-card-border)] rounded-2xl p-6 hover:border-[var(--dash-card-border)] transition">
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <h3 className="font-bold text-lg">{event.title}</h3>
-                    <p className="text-white/40 text-sm">
+                    <p className="text-[var(--color-text-secondary)] text-sm">
                       {new Date(event.date).toLocaleDateString("ru-RU", {
                         day: "numeric", month: "long", year: "numeric"
                       })} · {event.venue.name}
@@ -85,7 +85,7 @@ export default async function OrganizerPage() {
                   <span className={`text-xs px-2 py-1 rounded-full ${
                     event.status === "PUBLISHED"
                       ? "bg-green-500/20 text-green-400"
-                      : "bg-white/10 text-white/40"
+                      : "bg-[var(--color-background-secondary)] text-[var(--color-text-secondary)]"
                   }`}>
                     {event.status === "PUBLISHED" ? "Опубликовано" : "Черновик"}
                   </span>
@@ -93,11 +93,11 @@ export default async function OrganizerPage() {
 
                 {/* Прогресс бар */}
                 <div className="mb-3">
-                  <div className="flex justify-between text-xs text-white/40 mb-1">
+                  <div className="flex justify-between text-xs text-[var(--color-text-secondary)] mb-1">
                     <span>Продано {sold} из {total}</span>
                     <span>{percent}%</span>
                   </div>
-                  <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                  <div className="h-1.5 bg-[var(--color-background-secondary)] rounded-full overflow-hidden">
                     <div
                       className="h-full bg-white rounded-full"
                       style={{ width: `${percent}%` }}
@@ -106,12 +106,12 @@ export default async function OrganizerPage() {
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-white/60">
-                    Выручка: <span className="text-white font-medium">{revenue.toLocaleString("ru-RU")} ₸</span>
+                  <span className="text-sm text-[var(--color-text-secondary)]">
+                    Выручка: <span className="text-[var(--color-text-primary)] font-medium">{revenue.toLocaleString("ru-RU")} ₸</span>
                   </span>
                   <Link
                     href={`/events/${event.id}`}
-                    className="text-xs text-white/40 hover:text-white transition"
+                    className="text-xs text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition"
                   >
                     Открыть →
                   </Link>

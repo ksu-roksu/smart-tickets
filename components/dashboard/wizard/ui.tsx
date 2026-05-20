@@ -12,8 +12,8 @@ export interface StepProps {
 
 const S = {
   section: {
-    background: '#111',
-    border: '1px solid rgba(255,255,255,0.06)',
+    background: 'var(--dash-card-bg)',
+    border: '1px solid var(--color-border-tertiary)',
     borderRadius: 18,
     overflow: 'hidden',
     marginBottom: 14,
@@ -31,7 +31,7 @@ const S = {
   sTitle: {
     fontSize: 16,
     fontWeight: 700,
-    color: 'rgba(255,255,255,0.92)',
+    color: 'var(--color-text-primary)',
     marginBottom: 4,
     lineHeight: 1.3,
     letterSpacing: '-0.02em',
@@ -39,7 +39,7 @@ const S = {
 
   sDesc: {
     fontSize: 13,
-    color: 'rgba(255,255,255,0.35)',
+    color: 'var(--color-text-tertiary)',
     marginBottom: 18,
     lineHeight: 1.5,
   } as React.CSSProperties,
@@ -47,7 +47,7 @@ const S = {
   label: {
     fontSize: 11,
     fontWeight: 700,
-    color: 'rgba(255,255,255,0.42)',
+    color: 'var(--color-text-secondary)',
     textTransform: 'uppercase' as const,
     letterSpacing: '0.06em',
     marginBottom: 7,
@@ -68,18 +68,18 @@ const S = {
     padding: '0 15px',
     fontSize: 14,
     fontFamily: 'var(--font-sans)',
-    border: '1px solid rgba(255,255,255,0.08)',
+    border: '1px solid var(--color-border-tertiary)',
     borderRadius: 14,
-    background: 'rgba(255,255,255,0.04)',
-    color: 'rgba(255,255,255,0.82)',
+    background: 'var(--color-background-secondary)',
+    color: 'var(--color-text-primary)',
     transition: 'border 0.15s, box-shadow 0.15s, background 0.15s',
     outline: 'none',
     boxSizing: 'border-box' as const,
   } as React.CSSProperties,
 
   inputFilled: {
-    borderColor: 'rgba(255,255,255,0.14)',
-    background: 'rgba(255,255,255,0.055)',
+    borderColor: 'var(--color-border-primary)',
+    background: 'var(--color-background-secondary)',
   } as React.CSSProperties,
 
   inputError: {
@@ -92,10 +92,10 @@ const S = {
     padding: '13px 15px',
     fontSize: 14,
     fontFamily: 'var(--font-sans)',
-    border: '1px solid rgba(255,255,255,0.08)',
+    border: '1px solid var(--color-border-tertiary)',
     borderRadius: 14,
-    background: 'rgba(255,255,255,0.04)',
-    color: 'rgba(255,255,255,0.82)',
+    background: 'var(--color-background-secondary)',
+    color: 'var(--color-text-primary)',
     resize: 'vertical' as const,
     minHeight: 120,
     transition: 'border 0.15s, box-shadow 0.15s, background 0.15s',
@@ -110,10 +110,10 @@ const S = {
     padding: '0 15px',
     fontSize: 14,
     fontFamily: 'var(--font-sans)',
-    border: '1px solid rgba(255,255,255,0.08)',
+    border: '1px solid var(--color-border-tertiary)',
     borderRadius: 14,
-    background: '#171717',
-    color: 'rgba(255,255,255,0.82)',
+    background: 'var(--color-background-tertiary)',
+    color: 'var(--color-text-primary)',
     cursor: 'pointer',
     outline: 'none',
     boxSizing: 'border-box' as const,
@@ -122,7 +122,7 @@ const S = {
 
   hint: {
     fontSize: 12,
-    color: 'rgba(255,255,255,0.25)',
+    color: 'var(--color-text-tertiary)',
     marginTop: 6,
     lineHeight: 1.4,
   } as React.CSSProperties,
@@ -139,7 +139,7 @@ const S = {
 
   char: {
     fontSize: 11,
-    color: 'rgba(255,255,255,0.25)',
+    color: 'var(--color-text-tertiary)',
     textAlign: 'right' as const,
     marginTop: 5,
   } as React.CSSProperties,
@@ -192,7 +192,7 @@ const S = {
 
   divider: {
     border: 'none',
-    borderTop: '1px solid rgba(255,255,255,0.06)',
+    borderTop: '1px solid var(--color-border-tertiary)',
     margin: '18px 0',
   } as React.CSSProperties,
 
@@ -201,19 +201,19 @@ const S = {
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: '16px 0',
-    borderTop: '1px solid rgba(255,255,255,0.06)',
+    borderTop: '1px solid var(--color-border-tertiary)',
   } as React.CSSProperties,
 
   tglLbl: {
     fontSize: 14,
-    color: 'rgba(255,255,255,0.82)',
+    color: 'var(--color-text-primary)',
     lineHeight: 1.3,
     fontWeight: 600,
   } as React.CSSProperties,
 
   tglDesc: {
     fontSize: 12,
-    color: 'rgba(255,255,255,0.35)',
+    color: 'var(--color-text-tertiary)',
     marginTop: 3,
     lineHeight: 1.4,
   } as React.CSSProperties,
@@ -224,11 +224,11 @@ const S = {
     alignItems: 'center',
     minHeight: 42,
     padding: '6px 10px',
-    border: '1px solid rgba(255,255,255,0.08)',
+    border: '1px solid var(--color-border-tertiary)',
     borderRadius: 14,
     gap: 6,
     cursor: 'text',
-    background: 'rgba(255,255,255,0.04)',
+    background: 'var(--color-background-secondary)',
     boxSizing: 'border-box' as const,
   } as React.CSSProperties,
 
@@ -259,8 +259,8 @@ export function InfoTip({ text }: { text: string }) {
         display: 'inline-flex',
         alignItems: 'center',
         justifyContent: 'center',
-        border: '1px solid rgba(255,255,255,0.10)',
-        color: 'rgba(255,255,255,0.30)',
+        border: '1px solid var(--color-border-secondary)',
+        color: 'var(--color-text-tertiary)',
         fontSize: 10,
         fontWeight: 700,
         cursor: 'help',
@@ -386,7 +386,7 @@ export function Input({
         e.currentTarget.style.boxShadow = '0 0 0 3px rgba(249,115,22,0.10)'
       }}
       onBlur={e => {
-        e.currentTarget.style.borderColor = filled ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.08)'
+        e.currentTarget.style.borderColor = filled ? 'var(--color-border-primary)' : 'var(--color-border-tertiary)'
         e.currentTarget.style.boxShadow = 'none'
       }}
     />
@@ -421,7 +421,7 @@ export function Textarea({
         e.currentTarget.style.boxShadow = '0 0 0 3px rgba(249,115,22,0.10)'
       }}
       onBlur={e => {
-        e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'
+        e.currentTarget.style.borderColor = 'var(--color-border-tertiary)'
         e.currentTarget.style.boxShadow = 'none'
       }}
     />
@@ -448,7 +448,7 @@ export function Select({
         e.currentTarget.style.borderColor = 'rgba(249,115,22,0.45)'
       }}
       onBlur={e => {
-        e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'
+        e.currentTarget.style.borderColor = 'var(--color-border-tertiary)'
       }}
     >
       {placeholder && <option value="">{placeholder}</option>}
@@ -494,11 +494,11 @@ export function Toggle({
           width: 38,
           height: 22,
           borderRadius: 999,
-          background: checked ? '#F97316' : 'rgba(255,255,255,0.10)',
+          background: checked ? '#F97316' : 'var(--color-border-secondary)',
           position: 'relative',
           flexShrink: 0,
           transition: 'background 0.15s',
-          border: '1px solid rgba(255,255,255,0.08)',
+          border: '1px solid var(--color-border-tertiary)',
         }}
       >
         <input
@@ -557,11 +557,11 @@ export function ChipPicker({
             onClick={() => !maxed && toggle(o.value)}
             style={{
               padding: '7px 13px',
-              border: `1px solid ${on ? 'rgba(249,115,22,0.35)' : 'rgba(255,255,255,0.08)'}`,
+              border: `1px solid ${on ? 'rgba(249,115,22,0.35)' : 'var(--color-border-tertiary)'}`,
               borderRadius: 999,
               fontSize: 12,
-              color: on ? '#FB923C' : 'rgba(255,255,255,0.38)',
-              background: on ? 'rgba(249,115,22,0.10)' : 'rgba(255,255,255,0.03)',
+              color: on ? '#FB923C' : 'var(--color-text-tertiary)',
+              background: on ? 'rgba(249,115,22,0.10)' : 'var(--color-background-secondary)',
               fontWeight: on ? 600 : 400,
               cursor: maxed ? 'not-allowed' : 'pointer',
               opacity: maxed ? 0.4 : 1,
@@ -620,7 +620,7 @@ export function TagInput({
           border: 'none',
           outline: 'none',
           fontSize: 13,
-          color: 'rgba(255,255,255,0.82)',
+          color: 'var(--color-text-primary)',
           background: 'transparent',
           minWidth: 80,
           height: 28,

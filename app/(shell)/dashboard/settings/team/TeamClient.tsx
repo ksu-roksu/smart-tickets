@@ -159,11 +159,11 @@ export default function TeamClient({
   }
 
   return (
-    <div className="min-h-screen p-6" style={{ background: '#0d0d0d', color: 'white' }}>
+    <div className="min-h-screen p-6" >
       <div className="mb-6 flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-xl font-semibold text-white">Команда и доступы</h1>
-          <p className="mt-0.5 text-sm text-white/30">
+          <h1 className="text-xl font-semibold text-[var(--color-text-primary)]">Команда и доступы</h1>
+          <p className="mt-0.5 text-sm text-[var(--color-text-tertiary)]">
             Управление ролями, участниками и безопасностью организации
           </p>
         </div>
@@ -172,7 +172,7 @@ export default function TeamClient({
           <button
             type="button"
             onClick={() => setIsModalOpen(true)}
-            className="rounded-xl border border-orange-500/25 bg-orange-500/10 px-4 py-2 text-sm font-medium text-orange-400 transition-colors hover:bg-orange-500/20"
+            className="rounded-xl border border-orange-500/25 bg-orange-500/10 px-4 py-2 text-sm font-medium text-orange-600 dark:text-orange-400 transition-colors hover:bg-orange-500/20"
           >
             + Пригласить
           </button>
@@ -192,7 +192,7 @@ export default function TeamClient({
 
       <div className="mb-4 flex flex-wrap items-center gap-2">
   <div className="relative min-w-40 flex-1">
-    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-white/20">
+    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-[var(--color-text-tertiary)]">
       🔍
     </span>
 
@@ -200,7 +200,7 @@ export default function TeamClient({
       value={search}
       onChange={(e) => setSearch(e.target.value)}
       placeholder="Поиск по имени, email или организации…"
-      className="h-11 w-full rounded-xl border border-white/[0.07] bg-[#111] py-2 pl-9 pr-4 text-sm text-white/70 placeholder:text-white/25 outline-none transition-all hover:border-white/[0.12] focus:border-orange-500/30 focus:bg-orange-500/[0.04]"
+      className="h-11 w-full rounded-xl border border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] py-2 pl-9 pr-4 text-sm text-[var(--color-text-primary)] placeholder:text-[var(--color-text-tertiary)] outline-none transition-all hover:border-[var(--dash-card-border)] focus:border-orange-500/30 focus:bg-orange-500/[0.04]"
     />
   </div>
 
@@ -208,7 +208,7 @@ export default function TeamClient({
     <select
       value={role}
       onChange={(e) => setRole(e.target.value)}
-      className="h-11 min-w-[180px] appearance-none rounded-xl border border-white/[0.07] bg-[#111] px-4 pr-10 text-sm font-medium text-white/65 outline-none transition-all hover:border-white/[0.12] focus:border-orange-500/30 focus:bg-orange-500/[0.04]"
+      className="h-11 min-w-[180px] appearance-none rounded-xl border border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] px-4 pr-10 text-sm font-medium text-[var(--color-text-secondary)] outline-none transition-all hover:border-[var(--dash-card-border)] focus:border-orange-500/30 focus:bg-orange-500/[0.04]"
     >
       <option value="ALL">Все роли</option>
       <option value="OWNER">Владелец</option>
@@ -219,18 +219,18 @@ export default function TeamClient({
       <option value="VIEWER">Наблюдатель</option>
     </select>
 
-    <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-white/30">
+    <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[var(--color-text-tertiary)]">
       ▾
     </span>
   </div>
 </div>
 
-      <div className="overflow-hidden rounded-2xl border border-white/[0.06]" style={{ background: '#111' }}>
+      <div className="overflow-hidden rounded-2xl border border-[var(--dash-card-border)]" >
         <table className="w-full text-sm">
-          <thead className="border-b border-white/[0.06]" style={{ background: '#0d0d0d' }}>
+          <thead className="border-b border-[var(--dash-card-border)]" >
             <tr>
               {['УЧАСТНИК', 'РОЛЬ', isPlatformUser ? 'ОРГАНИЗАЦИЯ' : 'ДАТА', 'СТАТУС', ''].map((h) => (
-                <th key={h} className="px-4 py-3 text-left text-[10px] font-semibold uppercase tracking-wider text-white/20">
+                <th key={h} className="px-4 py-3 text-left text-[10px] font-semibold uppercase tracking-wider text-[var(--color-text-tertiary)]">
                   {h}
                 </th>
               ))}
@@ -242,8 +242,8 @@ export default function TeamClient({
               <tr>
                 <td colSpan={5} className="px-4 py-16 text-center">
                   <div className="mb-2 text-2xl">👥</div>
-                  <div className="text-sm font-medium text-white/50">Участники не найдены</div>
-                  <div className="mt-1 text-xs text-white/25">
+                  <div className="text-sm font-medium text-[var(--color-text-secondary)]">Участники не найдены</div>
+                  <div className="mt-1 text-xs text-[var(--color-text-tertiary)]">
                     Попробуйте изменить поиск или фильтр.
                   </div>
                 </td>
@@ -252,14 +252,14 @@ export default function TeamClient({
               filtered.map((member) => (
                 <tr
                   key={member.id}
-                  className="group border-b border-white/[0.04] transition-colors hover:bg-white/[0.03] last:border-none"
+                  className="group border-b border-[var(--dash-card-border)] transition-colors hover:bg-[var(--color-background-secondary)] last:border-none"
                 >
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
                       <Avatar name={member.name} email={member.email} />
                       <div>
-                        <div className="font-medium text-white/80">{member.name}</div>
-                        <div className="mt-0.5 text-xs text-white/30">{member.email}</div>
+                        <div className="font-medium text-[var(--color-text-primary)]">{member.name}</div>
+                        <div className="mt-0.5 text-xs text-[var(--color-text-tertiary)]">{member.email}</div>
                       </div>
                     </div>
                   </td>
@@ -270,7 +270,7 @@ export default function TeamClient({
       <select
         value={member.role}
         onChange={(e) => changeRole(member.id, e.target.value)}
-        className="min-w-[190px] appearance-none rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 pr-9 text-xs font-semibold text-white/75 outline-none transition-all hover:border-white/[0.14] focus:border-orange-500/30 focus:bg-orange-500/[0.06]"
+        className="min-w-[190px] appearance-none rounded-xl border border-[var(--dash-card-border)] bg-[var(--color-background-secondary)] px-3 py-2 pr-9 text-xs font-semibold text-[var(--color-text-primary)] outline-none transition-all hover:border-[var(--dash-card-border)] focus:border-orange-500/30 focus:bg-orange-500/[0.06]"
       >
         <option value="ADMIN">Администратор</option>
         <option value="EVENT_MANAGER">Менеджер событий</option>
@@ -279,7 +279,7 @@ export default function TeamClient({
         <option value="VIEWER">Наблюдатель</option>
       </select>
 
-      <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-white/30">
+      <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[var(--color-text-tertiary)]">
         ▾
       </span>
     </div>
@@ -287,12 +287,12 @@ export default function TeamClient({
     <RoleBadge role={member.role} />
   )}
 
-  <div className="mt-1 max-w-md text-xs text-white/25">
+  <div className="mt-1 max-w-md text-xs text-[var(--color-text-tertiary)]">
     {ROLE_DESCRIPTIONS[member.role] ?? 'Пользовательская роль'}
   </div>
 </td>
 
-                  <td className="px-4 py-3 text-white/45">
+                  <td className="px-4 py-3 text-[var(--color-text-secondary)]">
                     {isPlatformUser ? member.organization : member.joinedAt}
                   </td>
 
@@ -306,7 +306,7 @@ export default function TeamClient({
                         <button
                           type="button"
                           onClick={() => setRestoreMemberData(member)}
-                          className="rounded-xl border border-orange-500/25 bg-orange-500/10 px-3.5 py-1.5 text-xs font-semibold text-orange-400 transition-colors hover:bg-orange-500/20"
+                          className="rounded-xl border border-orange-500/25 bg-orange-500/10 px-3.5 py-1.5 text-xs font-semibold text-orange-600 dark:text-orange-400 transition-colors hover:bg-orange-500/20"
                         >
                           Восстановить
                         </button>
@@ -314,7 +314,7 @@ export default function TeamClient({
                         <button
                           type="button"
                           onClick={() => setConfirmMember(member)}
-                          className="opacity-0 rounded-lg border border-white/[0.07] px-3 py-1 text-xs text-white/30 transition-all hover:border-red-400/30 hover:bg-red-400/10 hover:text-red-300 group-hover:opacity-100"
+                          className="opacity-0 rounded-lg border border-[var(--dash-card-border)] px-3 py-1 text-xs text-[var(--color-text-tertiary)] transition-all hover:border-red-400/30 hover:bg-red-50 dark:bg-red-400/10 hover:text-red-300 group-hover:opacity-100"
                         >
                           {member.status === 'INVITED' ? 'Отозвать' : 'Удалить'}
                         </button>
@@ -362,10 +362,10 @@ export default function TeamClient({
 
 function MetricCard({ label, value, delta }: { label: string; value: number; delta: string }) {
   return (
-    <div className="rounded-2xl border border-white/[0.06] p-4" style={{ background: '#111' }}>
-      <div className="mb-2 text-xs text-white/30">{label}</div>
-      <div className="text-2xl font-semibold text-white">{value}</div>
-      <div className="mt-1 text-xs text-emerald-400">{delta}</div>
+    <div className="rounded-2xl border border-[var(--dash-card-border)] p-4" >
+      <div className="mb-2 text-xs text-[var(--color-text-tertiary)]">{label}</div>
+      <div className="text-2xl font-semibold text-[var(--color-text-primary)]">{value}</div>
+      <div className="mt-1 text-xs text-emerald-600 dark:text-emerald-400">{delta}</div>
     </div>
   )
 }
@@ -379,7 +379,7 @@ function Avatar({ name, email }: { name: string; email: string }) {
     .toUpperCase() || email[0]?.toUpperCase()
 
   return (
-    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-orange-500/20 bg-orange-500/10 text-xs font-semibold text-orange-400">
+    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-orange-500/20 bg-orange-500/10 text-xs font-semibold text-orange-600 dark:text-orange-400">
       {initials}
     </div>
   )
@@ -395,8 +395,8 @@ function RoleBadge({ role }: { role: string }) {
 
 function StatusBadge({ status }: { status: string }) {
   const config: Record<string, { label: string; dot: string; cls: string }> = {
-    ACTIVE: { label: 'Активен', dot: 'bg-emerald-400', cls: 'border-emerald-400/20 bg-emerald-400/10 text-emerald-400' },
-    INVITED: { label: 'Приглашён', dot: 'bg-amber-400', cls: 'border-amber-400/20 bg-amber-400/10 text-amber-300' },
+    ACTIVE: { label: 'Активен', dot: 'bg-emerald-400', cls: 'border-emerald-200 dark:border-emerald-400/20 bg-emerald-50 dark:bg-emerald-400/10 text-emerald-600 dark:text-emerald-400' },
+    INVITED: { label: 'Приглашён', dot: 'bg-amber-400', cls: 'border-amber-200 dark:border-amber-400/20 bg-amber-50 dark:bg-amber-400/10 text-amber-300' },
     SUSPENDED: { label: 'Ограничен', dot: 'bg-zinc-400', cls: 'border-zinc-400/20 bg-zinc-400/10 text-zinc-400' },
     REMOVED: { label: 'Удалён', dot: 'bg-zinc-500', cls: 'border-zinc-500/20 bg-zinc-500/10 text-zinc-500' },
   }
@@ -476,11 +476,11 @@ function InviteModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4 backdrop-blur-md">
-      <div className="w-full max-w-lg rounded-2xl border border-white/[0.08] bg-[#111] p-6 shadow-2xl">
+      <div className="w-full max-w-lg rounded-2xl border border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] p-6 shadow-2xl">
         <div className="mb-5 flex items-start justify-between gap-4">
           <div>
-            <h2 className="text-xl font-semibold text-white">Пригласить участника</h2>
-            <p className="mt-1 text-sm text-white/35">
+            <h2 className="text-xl font-semibold text-[var(--color-text-primary)]">Пригласить участника</h2>
+            <p className="mt-1 text-sm text-[var(--color-text-tertiary)]">
               Добавьте пользователя в организацию и назначьте роль.
             </p>
           </div>
@@ -488,7 +488,7 @@ function InviteModal({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-1 text-sm text-white/35 transition-colors hover:text-white/60"
+            className="rounded-xl border border-[var(--dash-card-border)] bg-[var(--color-background-secondary)] px-3 py-1 text-sm text-[var(--color-text-tertiary)] transition-colors hover:text-[var(--color-text-secondary)]"
           >
             ✕
           </button>
@@ -499,7 +499,7 @@ function InviteModal({
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Имя"
-            className="w-full rounded-xl border border-white/[0.07] bg-white/[0.04] px-4 py-3 text-sm text-white/70 placeholder:text-white/20 focus:border-white/15 focus:outline-none"
+            className="w-full rounded-xl border border-[var(--dash-card-border)] bg-[var(--color-background-secondary)] px-4 py-3 text-sm text-[var(--color-text-primary)] placeholder:text-[var(--color-text-tertiary)] focus:border-[var(--dash-card-border)] focus:outline-none"
           />
 
           <input
@@ -507,13 +507,13 @@ function InviteModal({
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
             type="email"
-            className="w-full rounded-xl border border-white/[0.07] bg-white/[0.04] px-4 py-3 text-sm text-white/70 placeholder:text-white/20 focus:border-white/15 focus:outline-none"
+            className="w-full rounded-xl border border-[var(--dash-card-border)] bg-[var(--color-background-secondary)] px-4 py-3 text-sm text-[var(--color-text-primary)] placeholder:text-[var(--color-text-tertiary)] focus:border-[var(--dash-card-border)] focus:outline-none"
           />
 
           <select
             value={role}
             onChange={(e) => setRole(e.target.value)}
-            className="w-full rounded-xl border border-white/[0.07] bg-[#111] px-4 py-3 text-sm text-white/70 focus:border-white/15 focus:outline-none"
+            className="w-full rounded-xl border border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] px-4 py-3 text-sm text-[var(--color-text-primary)] focus:border-[var(--dash-card-border)] focus:outline-none"
           >
             <option value="ADMIN">Администратор</option>
             <option value="EVENT_MANAGER">Менеджер событий</option>
@@ -524,14 +524,14 @@ function InviteModal({
         </div>
 
         {error && (
-          <div className="mt-4 rounded-xl border border-red-400/20 bg-red-400/10 px-4 py-3 text-sm text-red-300">
+          <div className="mt-4 rounded-xl border border-red-200 dark:border-red-400/20 bg-red-50 dark:bg-red-400/10 px-4 py-3 text-sm text-red-300">
             <div>{error}</div>
 
             {removedMemberId && (
               <button
                 type="button"
                 onClick={() => onRestoreNeeded(removedMemberId)}
-                className="mt-2 text-xs font-medium text-orange-400 underline hover:no-underline"
+                className="mt-2 text-xs font-medium text-orange-600 dark:text-orange-400 underline hover:no-underline"
               >
                 Восстановить доступ →
               </button>
@@ -540,18 +540,18 @@ function InviteModal({
         )}
 
         {inviteLink && (
-          <div className="mt-4 rounded-xl border border-emerald-400/20 bg-emerald-400/10 px-4 py-3">
+          <div className="mt-4 rounded-xl border border-emerald-200 dark:border-emerald-400/20 bg-emerald-50 dark:bg-emerald-400/10 px-4 py-3">
             <div className="text-sm font-medium text-emerald-300">
               {resent ? 'Новая ссылка создана — предыдущая деактивирована' : 'Приглашение создано'}
             </div>
 
             {resent && (
-              <div className="mt-1 text-xs text-amber-400">
+              <div className="mt-1 text-xs text-amber-600 dark:text-amber-400">
                 Этот пользователь уже был приглашён
               </div>
             )}
 
-            <div className="mt-2 break-all text-xs text-white/35">
+            <div className="mt-2 break-all text-xs text-[var(--color-text-tertiary)]">
               {inviteLink}
             </div>
 
@@ -566,7 +566,7 @@ function InviteModal({
                 'mt-3 rounded-xl border px-3 py-1.5 text-xs font-medium transition',
                 copied
                   ? 'border-emerald-400/30 bg-emerald-400/20 text-emerald-200'
-                  : 'border-emerald-400/20 text-emerald-300 hover:bg-emerald-400/10',
+                  : 'border-emerald-200 dark:border-emerald-400/20 text-emerald-300 hover:bg-emerald-50 dark:bg-emerald-400/10',
               ].join(' ')}
             >
               {copied ? 'Скопировано' : 'Скопировать ссылку'}
@@ -578,7 +578,7 @@ function InviteModal({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-2.5 text-sm text-white/45 transition hover:text-white/70"
+            className="rounded-xl border border-[var(--dash-card-border)] bg-[var(--color-background-secondary)] px-4 py-2.5 text-sm text-[var(--color-text-secondary)] transition hover:text-[var(--color-text-primary)]"
           >
             Закрыть
           </button>
@@ -587,7 +587,7 @@ function InviteModal({
             type="button"
             onClick={submit}
             disabled={loading}
-            className="rounded-xl border border-orange-500/25 bg-orange-500/10 px-4 py-2.5 text-sm font-semibold text-orange-400 transition-colors hover:bg-orange-500/20 disabled:opacity-50"
+            className="rounded-xl border border-orange-500/25 bg-orange-500/10 px-4 py-2.5 text-sm font-semibold text-orange-600 dark:text-orange-400 transition-colors hover:bg-orange-500/20 disabled:opacity-50"
           >
             {loading ? 'Создаём...' : inviteLink ? 'Создать новую ссылку' : 'Отправить приглашение'}
           </button>
@@ -612,26 +612,26 @@ function ConfirmRemoveModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4 backdrop-blur-md">
-      <div className="w-full max-w-md rounded-2xl border border-red-400/20 bg-[#111] p-6 shadow-2xl">
+      <div className="w-full max-w-md rounded-2xl border border-red-200 dark:border-red-400/20 bg-[var(--dash-card-bg)] p-6 shadow-2xl">
         <div className="mb-5">
-          <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full border border-red-400/20 bg-red-400/10 text-red-300">
+          <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full border border-red-200 dark:border-red-400/20 bg-red-50 dark:bg-red-400/10 text-red-300">
             !
           </div>
 
-          <h2 className="text-xl font-semibold text-white">
+          <h2 className="text-xl font-semibold text-[var(--color-text-primary)]">
             {isInvite ? 'Отозвать приглашение?' : 'Удалить доступ?'}
           </h2>
 
-          <p className="mt-2 text-sm leading-6 text-white/35">
+          <p className="mt-2 text-sm leading-6 text-[var(--color-text-tertiary)]">
             {isInvite
               ? `Приглашение для ${member.name} будет отозвано.`
               : `Доступ для ${member.name} будет удалён.`}
           </p>
         </div>
 
-        <div className="rounded-xl border border-white/[0.06] bg-white/[0.04] px-4 py-3">
-          <div className="text-sm font-medium text-white/80">{member.name}</div>
-          <div className="mt-0.5 text-xs text-white/30">
+        <div className="rounded-xl border border-[var(--dash-card-border)] bg-[var(--color-background-secondary)] px-4 py-3">
+          <div className="text-sm font-medium text-[var(--color-text-primary)]">{member.name}</div>
+          <div className="mt-0.5 text-xs text-[var(--color-text-tertiary)]">
             {member.email} · {ROLE_LABELS[member.role] ?? member.role}
           </div>
         </div>
@@ -641,7 +641,7 @@ function ConfirmRemoveModal({
             type="button"
             onClick={onClose}
             disabled={loading}
-            className="rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-2.5 text-sm text-white/45 hover:text-white/70 disabled:opacity-50"
+            className="rounded-xl border border-[var(--dash-card-border)] bg-[var(--color-background-secondary)] px-4 py-2.5 text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] disabled:opacity-50"
           >
             Отмена
           </button>
@@ -650,7 +650,7 @@ function ConfirmRemoveModal({
             type="button"
             onClick={onConfirm}
             disabled={loading}
-            className="rounded-xl border border-red-400/25 bg-red-400/10 px-4 py-2.5 text-sm font-semibold text-red-300 transition hover:bg-red-400/20 disabled:opacity-50"
+            className="rounded-xl border border-red-400/25 bg-red-50 dark:bg-red-400/10 px-4 py-2.5 text-sm font-semibold text-red-300 transition hover:bg-red-400/20 disabled:opacity-50"
           >
             {loading ? 'Удаляем...' : isInvite ? 'Отозвать' : 'Удалить доступ'}
           </button>
@@ -682,32 +682,32 @@ function RestoreMemberModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4 backdrop-blur-md">
-      <div className="w-full max-w-md rounded-2xl border border-orange-500/20 bg-[#111] p-6 shadow-2xl">
+      <div className="w-full max-w-md rounded-2xl border border-orange-500/20 bg-[var(--dash-card-bg)] p-6 shadow-2xl">
         <div className="mb-5">
-          <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full border border-orange-500/25 bg-orange-500/10 text-orange-400">
+          <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full border border-orange-500/25 bg-orange-500/10 text-orange-600 dark:text-orange-400">
             ↻
           </div>
 
-          <h2 className="text-xl font-semibold text-white">Восстановить доступ?</h2>
+          <h2 className="text-xl font-semibold text-[var(--color-text-primary)]">Восстановить доступ?</h2>
 
-          <p className="mt-2 text-sm leading-6 text-white/35">
+          <p className="mt-2 text-sm leading-6 text-[var(--color-text-tertiary)]">
             Пользователь снова получит доступ к организации. Перед восстановлением выберите актуальную роль.
           </p>
         </div>
 
-        <div className="mb-4 rounded-xl border border-white/[0.06] bg-white/[0.04] px-4 py-3">
-          <div className="text-sm font-medium text-white/80">{member.name}</div>
-          <div className="mt-0.5 text-xs text-white/30">{member.email}</div>
+        <div className="mb-4 rounded-xl border border-[var(--dash-card-border)] bg-[var(--color-background-secondary)] px-4 py-3">
+          <div className="text-sm font-medium text-[var(--color-text-primary)]">{member.name}</div>
+          <div className="mt-0.5 text-xs text-[var(--color-text-tertiary)]">{member.email}</div>
         </div>
 
-        <label className="mb-2 block text-xs font-medium uppercase tracking-wider text-white/30">
+        <label className="mb-2 block text-xs font-medium uppercase tracking-wider text-[var(--color-text-tertiary)]">
           Роль после восстановления
         </label>
 
         <select
           value={role}
           onChange={(e) => setRole(e.target.value)}
-          className="w-full rounded-xl border border-white/[0.07] bg-[#111] px-4 py-3 text-sm text-white/70 focus:border-white/15 focus:outline-none"
+          className="w-full rounded-xl border border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] px-4 py-3 text-sm text-[var(--color-text-primary)] focus:border-[var(--dash-card-border)] focus:outline-none"
         >
           <option value="ADMIN">Администратор</option>
           <option value="EVENT_MANAGER">Event manager</option>
@@ -721,7 +721,7 @@ function RestoreMemberModal({
             type="button"
             onClick={onClose}
             disabled={loading}
-            className="rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-2.5 text-sm text-white/45 hover:text-white/70 disabled:opacity-50"
+            className="rounded-xl border border-[var(--dash-card-border)] bg-[var(--color-background-secondary)] px-4 py-2.5 text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] disabled:opacity-50"
           >
             Отмена
           </button>
@@ -730,7 +730,7 @@ function RestoreMemberModal({
             type="button"
             onClick={submit}
             disabled={loading}
-            className="rounded-xl border border-orange-500/25 bg-orange-500/10 px-4 py-2.5 text-sm font-semibold text-orange-400 transition-colors hover:bg-orange-500/20 disabled:opacity-50"
+            className="rounded-xl border border-orange-500/25 bg-orange-500/10 px-4 py-2.5 text-sm font-semibold text-orange-600 dark:text-orange-400 transition-colors hover:bg-orange-500/20 disabled:opacity-50"
           >
             {loading ? 'Восстанавливаем...' : 'Восстановить'}
           </button>

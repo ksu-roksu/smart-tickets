@@ -34,7 +34,7 @@ const ICON_MAP: Record<string, React.ElementType> = {
 // ─── Badge config ──────────────────────────────────────────────────────────────
 
 const BADGE_CONFIG: Record<BadgeType, { label: string; className: string }> = {
-  pro:        { label: 'PRO',   className: 'bg-violet-500/15 text-violet-400 border-violet-500/25' },
+  pro:        { label: 'PRO',   className: 'bg-violet-500/15 text-[var(--dash-badge-pro)] border-violet-500/25' },
   enterprise: { label: 'ENT',   className: 'bg-amber-500/15  text-amber-400  border-amber-500/25'  },
   dev:        { label: 'Dev',   className: 'bg-sky-500/15    text-sky-400    border-sky-500/25'    },
   soon:       { label: 'Скоро', className: 'bg-zinc-500/15   text-zinc-400   border-zinc-500/25'   },
@@ -54,21 +54,21 @@ function LockedTooltip({ item, visible }: { item: NavItem; visible: boolean }) {
   const isDev = badge === 'dev';
 
   return (
-    <div className="absolute left-[calc(100%+10px)] top-1/2 -translate-y-1/2 z-[100] w-52 rounded-2xl border border-white/[0.09] bg-[#161616] shadow-[0_8px_40px_rgba(0,0,0,0.7)] p-3 pointer-events-none">
-      <div className="relative h-9 rounded-xl overflow-hidden mb-3 bg-white/[0.04] border border-white/[0.06]">
+    <div className="absolute left-[calc(100%+10px)] top-1/2 -translate-y-1/2 z-[100] w-52 rounded-2xl border border-[var(--dash-card-border)] bg-[var(--dash-sidebar-bg)] shadow-[0_8px_40px_rgba(0,0,0,0.7)] p-3 pointer-events-none">
+      <div className="relative h-9 rounded-xl overflow-hidden mb-3 bg-[var(--color-background-secondary)] border border-[var(--dash-card-border)]">
         <div className="absolute inset-0 flex items-center gap-2 px-3" style={{ filter: 'blur(4px)', opacity: 0.35 }}>
-          <div className="h-1.5 w-14 rounded bg-white/40" />
+          <div className="h-1.5 w-14 rounded bg-[var(--color-background-secondary)]" />
           <div className="h-1.5 w-8 rounded bg-orange-400/60" />
-          <div className="h-1.5 w-10 rounded bg-white/25" />
+          <div className="h-1.5 w-10 rounded bg-[var(--color-background-secondary)]" />
         </div>
         <div className="absolute inset-0 flex items-center justify-center">
-          <Lock size={13} className="text-white/35" />
+          <Lock size={13} className="text-[var(--color-text-tertiary)]" />
         </div>
       </div>
-      <p className="text-[12px] font-semibold text-white/75 leading-tight mb-1">{item.upgradeFeature ?? item.label}</p>
-      {item.lockedDesc && <p className="text-[11px] text-white/35 leading-snug mb-3">{item.lockedDesc}</p>}
+      <p className="text-[12px] font-semibold text-[var(--color-text-primary)] leading-tight mb-1">{item.upgradeFeature ?? item.label}</p>
+      {item.lockedDesc && <p className="text-[11px] text-[var(--color-text-tertiary)] leading-snug mb-3">{item.lockedDesc}</p>}
       {isPro ? (
-        <div className="flex items-center gap-1.5 text-[11px] font-medium text-violet-400">
+        <div className="flex items-center gap-1.5 text-[11px] font-medium text-[var(--dash-badge-pro)]">
           <Sparkles size={10} /><span>{PLAN_LABELS[badge]}</span><ArrowRight size={10} className="ml-auto" />
         </div>
       ) : isDev ? (
@@ -106,22 +106,22 @@ function NavLink({ item }: { item: NavItem }) {
   const baseClass = [
     'group relative flex items-center gap-2 px-2.5 py-[7px] rounded-xl transition-all duration-100 select-none',
     item.locked
-      ? 'cursor-not-allowed opacity-50 hover:opacity-60 hover:bg-white/[0.03]'
+      ? 'cursor-not-allowed opacity-50 hover:opacity-60 hover:bg-[var(--color-background-secondary)]'
       : isActive
         ? 'bg-orange-500/10 cursor-pointer'
-        : 'hover:bg-white/[0.05] cursor-pointer',
+        : 'hover:bg-[var(--color-background-secondary)] cursor-pointer',
   ].join(' ');
 
   const inner = (
     <>
       <Icon
         size={15}
-        className={item.locked ? 'text-white/25 flex-shrink-0' : isActive ? 'text-orange-400 flex-shrink-0' : 'text-white/30 group-hover:text-white/60 flex-shrink-0 transition-colors'}
+        className={item.locked ? 'text-[var(--color-text-tertiary)] flex-shrink-0' : isActive ? 'text-orange-400 flex-shrink-0' : 'text-[var(--color-text-tertiary)] group-hover:text-[var(--color-text-secondary)] flex-shrink-0 transition-colors'}
         strokeWidth={isActive ? 2.2 : 1.8}
       />
       <span className={[
         'flex-1 min-w-0 truncate text-[13.5px] leading-none transition-colors',
-        item.locked ? 'text-white/30' : isActive ? 'text-orange-400 font-medium' : 'text-white/50 group-hover:text-white/80',
+        item.locked ? 'text-[var(--color-text-tertiary)]' : isActive ? 'text-orange-400 font-medium' : 'text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-primary)]',
       ].join(' ')}>
         {item.label}
       </span>
@@ -130,7 +130,7 @@ function NavLink({ item }: { item: NavItem }) {
           {BADGE_CONFIG[item.badge].label}
         </span>
       )}
-      {item.locked && <Lock size={10} className="flex-shrink-0 text-white/15" />}
+      {item.locked && <Lock size={10} className="flex-shrink-0 text-[var(--color-text-tertiary)]" />}
       <LockedTooltip item={item} visible={tooltipVisible} />
     </>
   );
@@ -158,10 +158,10 @@ function NavSection({ sectionKey, items }: { sectionKey: string; items: NavItem[
       {label && (
         <button
           onClick={() => collapsible && setCollapsed((c) => !c)}
-          className={['w-full flex items-center justify-between px-2.5 py-[5px] mb-[1px] rounded-lg transition-colors', collapsible ? 'hover:bg-white/[0.03] cursor-pointer' : 'cursor-default'].join(' ')}
+          className={['w-full flex items-center justify-between px-2.5 py-[5px] mb-[1px] rounded-lg transition-colors', collapsible ? 'hover:bg-[var(--color-background-secondary)] cursor-pointer' : 'cursor-default'].join(' ')}
         >
-          <span className="text-[10px] font-semibold uppercase tracking-[0.09em] text-white/20 leading-none">{label}</span>
-          {collapsible && (collapsed ? <ChevronRight size={10} className="text-white/20" /> : <ChevronDown size={10} className="text-white/20" />)}
+          <span className="text-[10px] font-semibold uppercase tracking-[0.09em] text-[var(--color-text-tertiary)] leading-none">{label}</span>
+          {collapsible && (collapsed ? <ChevronRight size={10} className="text-[var(--color-text-tertiary)]" /> : <ChevronDown size={10} className="text-[var(--color-text-tertiary)]" />)}
         </button>
       )}
       {!collapsed && (
@@ -177,13 +177,13 @@ function NavSection({ sectionKey, items }: { sectionKey: string; items: NavItem[
 
 function UpgradeBanner() {
   return (
-    <div className="mx-2 mb-2 p-3 rounded-2xl border border-violet-500/20 bg-gradient-to-br from-violet-500/[0.08] to-orange-500/[0.06]">
+    <div className="mx-2 mb-2 p-3 rounded-2xl border border-[var(--dash-badge-pro-border)] bg-gradient-to-br from-[var(--dash-badge-pro-bg)] to-orange-500/[0.06]">
       <div className="flex items-center gap-1.5 mb-1">
-        <Sparkles size={11} className="text-violet-400" />
-        <span className="text-[11px] font-semibold text-violet-300">Обновить до PRO</span>
+        <Sparkles size={11} className="text-[var(--dash-badge-pro)]" />
+        <span className="text-[11px] font-semibold text-[var(--dash-badge-pro)]">Обновить до PRO</span>
       </div>
-      <p className="text-[10px] text-white/30 leading-snug mb-2.5">Маркетинг, аналитика аудитории, фрод-мониторинг и API</p>
-      <Link href="/dashboard/settings/billing" className="flex items-center justify-center gap-1 h-7 rounded-xl bg-violet-500/15 hover:bg-violet-500/25 border border-violet-500/25 text-[11px] font-medium text-violet-300 transition-colors">
+      <p className="text-[10px] text-[var(--color-text-tertiary)] leading-snug mb-2.5">Маркетинг, аналитика аудитории, фрод-мониторинг и API</p>
+      <Link href="/dashboard/settings/billing" className="flex items-center justify-center gap-1 h-7 rounded-xl bg-[var(--dash-badge-pro-bg)] hover:opacity-80 border border-[var(--dash-badge-pro-border)] text-[11px] font-medium text-[var(--dash-badge-pro)] transition-colors">
         Узнать больше <ArrowRight size={10} />
       </Link>
     </div>
@@ -205,42 +205,42 @@ function OrgSwitcher({ ctx }: { ctx: AuthContext }) {
   const initials = (ctx.organizationName ?? ctx.name ?? 'U').split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase();
 
   return (
-    <div ref={ref} className="relative px-2 py-2.5 border-t border-white/[0.06] flex-shrink-0">
+    <div ref={ref} className="relative px-2 py-2.5 border-t border-[var(--dash-card-border)] flex-shrink-0">
       <button
         onClick={() => setOpen((o) => !o)}
-        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.07] hover:bg-white/[0.07] transition-colors group"
+        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-[var(--color-background-secondary)] border border-[var(--dash-card-border)] hover:bg-[var(--color-background-secondary)] transition-colors group"
       >
         <div className="w-[30px] h-[30px] rounded-lg bg-orange-500/15 border border-orange-500/25 flex items-center justify-center text-[10px] font-bold text-orange-400 flex-shrink-0">
           {initials}
         </div>
         <div className="flex-1 min-w-0 text-left">
-          <p className="text-[12px] font-medium text-white/75 truncate leading-tight">{ctx.organizationName ?? 'Baisanat Holding'}</p>
-          <p className="text-[10px] text-white/30 mt-[2px] leading-none">{ctx.isPlatformUser ? 'Платформа' : 'Free · Обновить до PRO'}</p>
+          <p className="text-[12px] font-medium text-[var(--color-text-primary)] truncate leading-tight">{ctx.organizationName ?? 'Baisanat Holding'}</p>
+          <p className="text-[10px] text-[var(--color-text-tertiary)] mt-[2px] leading-none">{ctx.isPlatformUser ? 'Платформа' : 'Free · Обновить до PRO'}</p>
         </div>
-        <ChevronsUpDown size={13} className="text-white/25 group-hover:text-white/45 flex-shrink-0 transition-colors" />
+        <ChevronsUpDown size={13} className="text-[var(--color-text-tertiary)] group-hover:text-[var(--color-text-secondary)] flex-shrink-0 transition-colors" />
       </button>
 
       {open && (
-        <div className="absolute bottom-full left-0 right-0 mb-1 bg-[#161616] border border-white/[0.09] rounded-2xl py-2 shadow-[0_-12px_40px_rgba(0,0,0,0.7)] z-50">
-          <div className="px-3 pb-2 mb-1 border-b border-white/[0.06]">
-            <p className="text-[12px] font-medium text-white/65 leading-tight">{ctx.name}</p>
-            <p className="text-[10px] text-white/30 mt-0.5">{ctx.email}</p>
+        <div className="absolute bottom-full left-0 right-0 mb-1 bg-[var(--dash-sidebar-bg)] border border-[var(--dash-card-border)] rounded-2xl py-2 shadow-[0_-12px_40px_rgba(0,0,0,0.7)] z-50">
+          <div className="px-3 pb-2 mb-1 border-b border-[var(--dash-card-border)]">
+            <p className="text-[12px] font-medium text-[var(--color-text-secondary)] leading-tight">{ctx.name}</p>
+            <p className="text-[10px] text-[var(--color-text-tertiary)] mt-0.5">{ctx.email}</p>
           </div>
-          <div className="px-1.5 pb-1 mb-1 border-b border-white/[0.06]">
-            <div className="flex items-center gap-2 px-2 py-1.5 rounded-xl bg-white/[0.04]">
+          <div className="px-1.5 pb-1 mb-1 border-b border-[var(--dash-card-border)]">
+            <div className="flex items-center gap-2 px-2 py-1.5 rounded-xl bg-[var(--color-background-secondary)]">
               <div className="w-6 h-6 rounded-md bg-orange-500/15 border border-orange-500/25 flex items-center justify-center text-[9px] font-bold text-orange-400 flex-shrink-0">{initials}</div>
               <div className="flex-1 min-w-0">
-                <p className="text-[12px] text-white/65 truncate">{ctx.organizationName ?? 'Baisanat Holding'}</p>
-                <p className="text-[9px] text-white/25">{ctx.role}</p>
+                <p className="text-[12px] text-[var(--color-text-secondary)] truncate">{ctx.organizationName ?? 'Baisanat Holding'}</p>
+                <p className="text-[9px] text-[var(--color-text-tertiary)]">{ctx.role}</p>
               </div>
               <Check size={11} className="text-orange-400 flex-shrink-0" />
             </div>
-            <button className="w-full flex items-center gap-2 px-2 py-1.5 rounded-xl hover:bg-white/[0.05] transition-colors text-white/35 hover:text-white/55 mt-0.5">
+            <button className="w-full flex items-center gap-2 px-2 py-1.5 rounded-xl hover:bg-[var(--color-background-secondary)] transition-colors text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)] mt-0.5">
               <Plus size={12} /><span className="text-[11px]">Добавить организацию</span>
             </button>
           </div>
           <div className="px-1.5">
-            <Link href="/dashboard/settings/org" onClick={() => setOpen(false)} className="flex items-center gap-2 px-2 py-1.5 rounded-xl hover:bg-white/[0.05] transition-colors text-white/35 hover:text-white/60">
+            <Link href="/dashboard/settings/org" onClick={() => setOpen(false)} className="flex items-center gap-2 px-2 py-1.5 rounded-xl hover:bg-[var(--color-background-secondary)] transition-colors text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)]">
               <Building size={12} /><span className="text-[11px]">Настройки организации</span>
             </Link>
             <Link href="/sign-out" className="flex items-center gap-2 px-2 py-1.5 rounded-xl hover:bg-red-500/[0.08] transition-colors text-red-400/50 hover:text-red-400">
@@ -276,15 +276,15 @@ export default function DashboardSidebar({ ctx }: { ctx: AuthContext }) {
   }, {});
 
   return (
-    <aside className="flex flex-col w-[236px] min-w-[236px] h-screen sticky top-0 overflow-hidden" style={{ background: '#0d0d0d', borderRight: '1px solid rgba(255,255,255,0.06)' }}>
+    <aside className="flex flex-col w-[236px] min-w-[236px] h-screen sticky top-0 overflow-hidden" >
       {/* Logo */}
-      <div className="px-4 pt-4 pb-3.5 border-b border-white/[0.06] flex-shrink-0">
-        <Link href="/" className="font-extrabold text-[15px] tracking-tight text-white">
+      <div className="px-4 pt-4 pb-3.5 border-b border-[var(--dash-card-border)] flex-shrink-0">
+        <Link href="/" className="font-extrabold text-[15px] tracking-tight text-[var(--color-text-primary)]">
           Smart<span className="text-orange-500">Tickets</span>
         </Link>
         <div className="flex items-center gap-1.5 mt-1.5">
           <span className="w-[5px] h-[5px] rounded-full bg-emerald-400 flex-shrink-0" />
-          <span className="text-[11px] text-white/30">{isPlatform ? 'Baisanat Holding' : 'Панель организатора'}</span>
+          <span className="text-[11px] text-[var(--color-text-tertiary)]">{isPlatform ? 'Baisanat Holding' : 'Панель организатора'}</span>
         </div>
       </div>
 

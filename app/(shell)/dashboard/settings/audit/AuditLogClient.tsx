@@ -43,12 +43,12 @@ const ACTION_STYLE: Record<string, { cls: string; dot: string; icon: string }> =
     icon: '↺',
   },
   'team.invite_accepted': {
-    cls: 'border-emerald-400/20 bg-emerald-400/10 text-emerald-400',
+    cls: 'border-emerald-200 dark:border-emerald-400/20 bg-emerald-50 dark:bg-emerald-400/10 text-emerald-600 dark:text-emerald-400',
     dot: 'bg-emerald-400',
     icon: '✓',
   },
   'team.invite_revoked': {
-    cls: 'border-amber-400/20 bg-amber-400/10 text-amber-300',
+    cls: 'border-amber-200 dark:border-amber-400/20 bg-amber-50 dark:bg-amber-400/10 text-amber-300',
     dot: 'bg-amber-400',
     icon: '✕',
   },
@@ -58,27 +58,27 @@ const ACTION_STYLE: Record<string, { cls: string; dot: string; icon: string }> =
     icon: '⟳',
   },
   'team.access_removed': {
-    cls: 'border-red-400/20 bg-red-400/10 text-red-300',
+    cls: 'border-red-200 dark:border-red-400/20 bg-red-50 dark:bg-red-400/10 text-red-300',
     dot: 'bg-red-400',
     icon: '✕',
   },
   'team.access_restored': {
-    cls: 'border-orange-500/25 bg-orange-500/10 text-orange-400',
+    cls: 'border-orange-500/25 bg-orange-500/10 text-orange-600 dark:text-orange-400',
     dot: 'bg-orange-400',
     icon: '↻',
   },
   'event.submit_for_review': {
-    cls: 'border-amber-400/20 bg-amber-400/10 text-amber-300',
+    cls: 'border-amber-200 dark:border-amber-400/20 bg-amber-50 dark:bg-amber-400/10 text-amber-300',
     dot: 'bg-amber-400',
     icon: '→',
   },
   'event.published': {
-    cls: 'border-emerald-400/20 bg-emerald-400/10 text-emerald-400',
+    cls: 'border-emerald-200 dark:border-emerald-400/20 bg-emerald-50 dark:bg-emerald-400/10 text-emerald-600 dark:text-emerald-400',
     dot: 'bg-emerald-400',
     icon: '●',
   },
   'event.cancelled': {
-    cls: 'border-red-400/20 bg-red-400/10 text-red-300',
+    cls: 'border-red-200 dark:border-red-400/20 bg-red-50 dark:bg-red-400/10 text-red-300',
     dot: 'bg-red-400',
     icon: '◉',
   },
@@ -101,8 +101,8 @@ function formatAction(action: string) {
 function getActionStyle(action: string) {
   return (
     ACTION_STYLE[action] ?? {
-      cls: 'border-white/[0.08] bg-white/[0.04] text-white/45',
-      dot: 'bg-white/30',
+      cls: 'border-[var(--dash-card-border)] bg-[var(--color-background-secondary)] text-[var(--color-text-secondary)]',
+      dot: 'bg-[var(--color-background-secondary)]',
       icon: '·',
     }
   )
@@ -180,10 +180,10 @@ export default function AuditLogClient({
   }, [logs, filtered.length])
 
   return (
-    <div className="min-h-screen p-6" style={{ background: '#0d0d0d', color: 'white' }}>
+    <div className="min-h-screen p-6" >
       <div className="mb-6">
-        <h1 className="text-xl font-semibold text-white">Журнал действий</h1>
-        <p className="mt-0.5 text-sm text-white/30">
+        <h1 className="text-xl font-semibold text-[var(--color-text-primary)]">Журнал действий</h1>
+        <p className="mt-0.5 text-sm text-[var(--color-text-tertiary)]">
           История всех действий в организации
         </p>
       </div>
@@ -197,7 +197,7 @@ export default function AuditLogClient({
 
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <div className="relative min-w-40 flex-1">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-white/20">
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-[var(--color-text-tertiary)]">
             🔍
           </span>
 
@@ -205,7 +205,7 @@ export default function AuditLogClient({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Поиск по имени, email, действию…"
-            className="h-11 w-full rounded-xl border border-white/[0.07] bg-[#111] py-2 pl-9 pr-4 text-sm text-white/70 placeholder:text-white/25 outline-none transition-all hover:border-white/[0.12] focus:border-orange-500/30 focus:bg-orange-500/[0.04]"
+            className="h-11 w-full rounded-xl border border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] py-2 pl-9 pr-4 text-sm text-[var(--color-text-primary)] placeholder:text-[var(--color-text-tertiary)] outline-none transition-all hover:border-[var(--dash-card-border)] focus:border-orange-500/30 focus:bg-orange-500/[0.04]"
           />
         </div>
 
@@ -213,7 +213,7 @@ export default function AuditLogClient({
           <select
             value={actionFilter}
             onChange={(e) => setActionFilter(e.target.value)}
-            className="h-11 min-w-[240px] appearance-none rounded-xl border border-white/[0.07] bg-[#111] px-4 pr-10 text-sm font-medium text-white/65 outline-none transition-all hover:border-white/[0.12] focus:border-orange-500/30 focus:bg-orange-500/[0.04]"
+            className="h-11 min-w-[240px] appearance-none rounded-xl border border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] px-4 pr-10 text-sm font-medium text-[var(--color-text-secondary)] outline-none transition-all hover:border-[var(--dash-card-border)] focus:border-orange-500/30 focus:bg-orange-500/[0.04]"
           >
             <option value="ALL">Все действия</option>
             {uniqueActions.map((action) => (
@@ -223,18 +223,18 @@ export default function AuditLogClient({
             ))}
           </select>
 
-          <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-white/30">
+          <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[var(--color-text-tertiary)]">
             ▾
           </span>
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-white/[0.06]" style={{ background: '#111' }}>
+      <div className="overflow-hidden rounded-2xl border border-[var(--dash-card-border)]" >
   {filtered.length === 0 ? (
     <div className="px-4 py-16 text-center">
       <div className="mb-2 text-2xl">🧾</div>
-      <div className="text-sm font-medium text-white/50">Записи не найдены</div>
-      <div className="mt-1 text-xs text-white/25">Попробуйте изменить поиск или фильтр.</div>
+      <div className="text-sm font-medium text-[var(--color-text-secondary)]">Записи не найдены</div>
+      <div className="mt-1 text-xs text-[var(--color-text-tertiary)]">Попробуйте изменить поиск или фильтр.</div>
     </div>
   ) : (
     <div className="divide-y divide-white/[0.04]">
@@ -254,7 +254,7 @@ export default function AuditLogClient({
             <button
               type="button"
               onClick={() => setExpanded(isOpen ? null : log.id)}
-              className="w-full px-4 py-4 text-left transition-colors hover:bg-white/[0.03]"
+              className="w-full px-4 py-4 text-left transition-colors hover:bg-[var(--color-background-secondary)]"
             >
               <div className="flex items-start gap-4">
                 <div className={`mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-xs ${style.cls}`}>
@@ -269,22 +269,22 @@ export default function AuditLogClient({
                     </span>
 
                     {target && (
-                      <span className="text-sm text-white/55">→ {target}</span>
+                      <span className="text-sm text-[var(--color-text-secondary)]">→ {target}</span>
                     )}
                   </div>
 
-                  <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-white/30">
-                    <span className="font-medium text-white/65">{log.actorName}</span>
+                  <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-[var(--color-text-tertiary)]">
+                    <span className="font-medium text-[var(--color-text-secondary)]">{log.actorName}</span>
                     <span>{log.actorEmail || '—'}</span>
-                    {diff && <span className="text-white/35">{diff}</span>}
+                    {diff && <span className="text-[var(--color-text-tertiary)]">{diff}</span>}
                   </div>
                 </div>
 
                 <div className="shrink-0 text-right">
-                  <div className="whitespace-nowrap text-xs text-white/40">
+                  <div className="whitespace-nowrap text-xs text-[var(--color-text-secondary)]">
                     {formatDate(log.createdAt)}
                   </div>
-                  <div className="mt-1 text-xs text-white/20">
+                  <div className="mt-1 text-xs text-[var(--color-text-tertiary)]">
                     {isOpen ? '▲' : '▼'}
                   </div>
                 </div>
@@ -292,14 +292,14 @@ export default function AuditLogClient({
             </button>
 
             {isOpen && (
-              <div className="border-t border-white/[0.04] bg-white/[0.025] px-4 py-4">
+              <div className="border-t border-[var(--dash-card-border)] bg-[var(--color-background-secondary)] px-4 py-4">
                 <div className="grid gap-4 md:grid-cols-2">
                   {log.before && <JsonBlock title="До изменения" data={log.before} />}
                   {log.after && <JsonBlock title="После изменения" data={log.after} />}
 
                   {log.metadata && (
                     <div className="md:col-span-2">
-                      <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-white/25">
+                      <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-[var(--color-text-tertiary)]">
                         Метаданные
                       </div>
 
@@ -307,9 +307,9 @@ export default function AuditLogClient({
                         {Object.entries(log.metadata).map(([key, value]) => (
                           <span
                             key={key}
-                            className="rounded-lg border border-white/[0.06] bg-[#111] px-3 py-1 text-xs text-white/45"
+                            className="rounded-lg border border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] px-3 py-1 text-xs text-[var(--color-text-secondary)]"
                           >
-                            <span className="text-white/25">{key}:</span> {String(value)}
+                            <span className="text-[var(--color-text-tertiary)]">{key}:</span> {String(value)}
                           </span>
                         ))}
                       </div>
@@ -317,7 +317,7 @@ export default function AuditLogClient({
                   )}
 
                   {log.ipAddress && (
-                    <div className="text-xs text-white/30">IP: {log.ipAddress}</div>
+                    <div className="text-xs text-[var(--color-text-tertiary)]">IP: {log.ipAddress}</div>
                   )}
                 </div>
               </div>
@@ -329,11 +329,11 @@ export default function AuditLogClient({
   )}
 </div>
 
-<div className="mt-4 text-center text-xs text-white/25">
+<div className="mt-4 text-center text-xs text-[var(--color-text-tertiary)]">
   Показано {filtered.length} из {logs.length} записей
 </div>
 
-      <div className="mt-4 text-center text-xs text-white/25">
+      <div className="mt-4 text-center text-xs text-[var(--color-text-tertiary)]">
         Показано {filtered.length} из {logs.length} записей
       </div>
     </div>
@@ -350,10 +350,10 @@ function MetricCard({
   delta: string
 }) {
   return (
-    <div className="rounded-2xl border border-white/[0.06] p-4" style={{ background: '#111' }}>
-      <div className="mb-2 text-xs text-white/30">{label}</div>
-      <div className="text-2xl font-semibold text-white">{value}</div>
-      <div className="mt-1 text-xs text-emerald-400">{delta}</div>
+    <div className="rounded-2xl border border-[var(--dash-card-border)] p-4" >
+      <div className="mb-2 text-xs text-[var(--color-text-tertiary)]">{label}</div>
+      <div className="text-2xl font-semibold text-[var(--color-text-primary)]">{value}</div>
+      <div className="mt-1 text-xs text-emerald-600 dark:text-emerald-400">{delta}</div>
     </div>
   )
 }
@@ -367,11 +367,11 @@ function JsonBlock({
 }) {
   return (
     <div>
-      <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-white/25">
+      <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-[var(--color-text-tertiary)]">
         {title}
       </div>
 
-      <pre className="max-h-72 overflow-auto rounded-xl border border-white/[0.06] bg-[#0d0d0d] p-3 text-xs leading-5 text-white/45">
+      <pre className="max-h-72 overflow-auto rounded-xl border border-[var(--dash-card-border)] bg-[var(--dash-bg)] p-3 text-xs leading-5 text-[var(--color-text-secondary)]">
         {JSON.stringify(data, null, 2)}
       </pre>
     </div>

@@ -42,3 +42,4 @@ next-env.d.ts
 
 /app/generated/prisma
 node_modules_broken/
+node_modules_broken/

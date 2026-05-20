@@ -66,15 +66,15 @@ function StatusBadge({ status }: { status: PromoStatus }) {
 }
 
 function UsageBar({ used, limit }: { used: number; limit: number | null }) {
-  if (!limit) return <span className="text-white/30 text-sm">∞</span>;
+  if (!limit) return <span className="text-[var(--color-text-tertiary)] text-sm">∞</span>;
 
   const pct = Math.min(100, Math.round((used / limit) * 100));
   const color = pct >= 90 ? 'bg-red-400' : pct >= 70 ? 'bg-amber-400' : 'bg-emerald-400';
 
   return (
     <div>
-      <div className="text-sm text-white/70">{used} / {limit}</div>
-      <div className="h-[3px] bg-white/[0.06] rounded-full mt-1.5 w-20">
+      <div className="text-sm text-[var(--color-text-primary)]">{used} / {limit}</div>
+      <div className="h-[3px] bg-[var(--color-background-secondary)] rounded-full mt-1.5 w-20">
         <div className={`h-full rounded-full ${color}`} style={{ width: `${pct}%` }} />
       </div>
     </div>
@@ -95,13 +95,13 @@ function DetailDrawer({ code, onClose }: { code: PromoCode | null; onClose: () =
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="w-80 h-full overflow-y-auto p-6 border-l border-white/[0.07]" style={{ background: '#111' }}>
+      <div className="w-80 h-full overflow-y-auto p-6 border-l border-[var(--dash-card-border)]" >
         <div className="flex items-center justify-between mb-5">
-          <span className="text-[10px] uppercase tracking-widest text-white/25">Промокод</span>
-          <button onClick={onClose} className="text-white/30 hover:text-white/60 text-lg leading-none">✕</button>
+          <span className="text-[10px] uppercase tracking-widest text-[var(--color-text-tertiary)]">Промокод</span>
+          <button onClick={onClose} className="text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)] text-lg leading-none">✕</button>
         </div>
 
-        <div className="font-mono text-2xl font-bold text-white mb-2">{code.code}</div>
+        <div className="font-mono text-2xl font-bold text-[var(--color-text-primary)] mb-2">{code.code}</div>
         <StatusBadge status={code.status} />
 
         <div className="mt-6 space-y-0">
@@ -113,20 +113,20 @@ function DetailDrawer({ code, onClose }: { code: PromoCode | null; onClose: () =
             ['Выручка', code.revenue ? fmt(code.revenue) : '—'],
             ['Действует до', code.expiresAt ?? '—'],
           ] as [string, string][]).map(([k, v]) => (
-            <div key={k} className="flex justify-between items-center py-3 border-b border-white/[0.05] text-sm">
-              <span className="text-white/35">{k}</span>
-              <span className="text-white/80 font-medium">{v}</span>
+            <div key={k} className="flex justify-between items-center py-3 border-b border-[var(--dash-card-border)] text-sm">
+              <span className="text-[var(--color-text-tertiary)]">{k}</span>
+              <span className="text-[var(--color-text-primary)] font-medium">{v}</span>
             </div>
           ))}
         </div>
 
         <div className="mt-6">
-          <div className="text-[10px] uppercase tracking-widest text-white/25 mb-3">Использования за 7 дней</div>
+          <div className="text-[10px] uppercase tracking-widest text-[var(--color-text-tertiary)] mb-3">Использования за 7 дней</div>
           <div className="flex items-end gap-1 h-12">
             {MINI_CHART.map((h, i) => (
               <div
                 key={i}
-                className="flex-1 rounded-sm bg-white/[0.06] hover:bg-orange-500/40 transition-colors"
+                className="flex-1 rounded-sm bg-[var(--color-background-secondary)] hover:bg-orange-500/40 transition-colors"
                 style={{ height: `${(h / maxBar) * 100}%` }}
               />
             ))}
@@ -137,7 +137,7 @@ function DetailDrawer({ code, onClose }: { code: PromoCode | null; onClose: () =
           <button className="flex-1 bg-orange-500/10 hover:bg-orange-500/20 border border-orange-500/20 text-orange-400 text-sm rounded-xl py-2 font-medium transition-colors">
             Редактировать
           </button>
-          <button className="px-4 bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-white/50 text-sm rounded-xl py-2 transition-colors">
+          <button className="px-4 bg-[var(--color-background-secondary)] hover:bg-[var(--color-background-secondary)] border border-[var(--dash-card-border)] text-[var(--color-text-secondary)] text-sm rounded-xl py-2 transition-colors">
             ⎘
           </button>
         </div>
@@ -184,8 +184,8 @@ function CreateWizard({
 
   const codeTypeObj = CODE_TYPES.find(t => t.value === form.codeType);
 
-  const inputCls = 'w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-sm text-white/80 placeholder:text-white/20 focus:outline-none focus:border-white/20 transition-colors';
-  const selectCls = 'w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-sm text-white/80 focus:outline-none focus:border-white/20 transition-colors';
+  const inputCls = 'w-full bg-[var(--color-background-secondary)] border border-[var(--dash-card-border)] rounded-xl px-3 py-2.5 text-sm text-[var(--color-text-primary)] placeholder:text-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--dash-card-border)] transition-colors';
+  const selectCls = 'w-full bg-[var(--color-background-secondary)] border border-[var(--dash-card-border)] rounded-xl px-3 py-2.5 text-sm text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--dash-card-border)] transition-colors';
 
   return (
     <div
@@ -194,13 +194,13 @@ function CreateWizard({
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="w-full max-w-lg rounded-2xl border border-white/[0.08] overflow-hidden" style={{ background: '#111' }}>
-        <div className="flex items-center justify-between px-6 py-5 border-b border-white/[0.06]">
-          <h2 className="text-base font-semibold text-white">Новый промокод</h2>
-          <button onClick={onClose} className="text-white/30 hover:text-white/60 text-lg leading-none">✕</button>
+      <div className="w-full max-w-lg rounded-2xl border border-[var(--dash-card-border)] overflow-hidden" >
+        <div className="flex items-center justify-between px-6 py-5 border-b border-[var(--dash-card-border)]">
+          <h2 className="text-base font-semibold text-[var(--color-text-primary)]">Новый промокод</h2>
+          <button onClick={onClose} className="text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)] text-lg leading-none">✕</button>
         </div>
 
-        <div className="flex border-b border-white/[0.06]">
+        <div className="flex border-b border-[var(--dash-card-border)]">
           {WIZARD_STEPS.map((s, i) => {
             const n = i + 1;
             const state = n < step ? 'done' : n === step ? 'active' : 'idle';
@@ -214,7 +214,7 @@ function CreateWizard({
                     ? 'border-orange-500 text-orange-400'
                     : state === 'done'
                       ? 'border-emerald-500/50 text-emerald-400/70 cursor-pointer'
-                      : 'border-transparent text-white/20'
+                      : 'border-transparent text-[var(--color-text-tertiary)]'
                 }`}
               >
                 <span className="block text-sm mb-0.5">{n}</span>
@@ -228,7 +228,7 @@ function CreateWizard({
           {step === 1 && (
             <>
               <div>
-                <label className="block text-xs font-medium text-white/40 mb-1.5">Название кампании *</label>
+                <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Название кампании *</label>
                 <input
                   type="text"
                   value={form.name}
@@ -239,7 +239,7 @@ function CreateWizard({
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-white/40 mb-1.5">Код *</label>
+                <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Код *</label>
                 <div className="flex gap-2">
                   <input
                     type="text"
@@ -250,16 +250,16 @@ function CreateWizard({
                   />
                   <button
                     onClick={() => update('code', generateCode())}
-                    className="px-3 border border-dashed border-white/[0.08] rounded-xl text-xs text-white/30 hover:text-white/50 hover:border-white/20 whitespace-nowrap transition-colors"
+                    className="px-3 border border-dashed border-[var(--dash-card-border)] rounded-xl text-xs text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)] hover:border-[var(--dash-card-border)] whitespace-nowrap transition-colors"
                   >
                     ↻ Случайный
                   </button>
                 </div>
-                <p className="text-xs text-white/20 mt-1">Только латинские буквы и цифры</p>
+                <p className="text-xs text-[var(--color-text-tertiary)] mt-1">Только латинские буквы и цифры</p>
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-white/40 mb-2">Тип промокода</label>
+                <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-2">Тип промокода</label>
                 <div className="grid grid-cols-2 gap-2">
                   {CODE_TYPES.map(t => (
                     <button
@@ -268,14 +268,14 @@ function CreateWizard({
                       className={`text-left p-3 rounded-xl border text-sm transition-all ${
                         form.codeType === t.value
                           ? 'border-orange-500/40 bg-orange-500/[0.08] text-orange-300'
-                          : 'border-white/[0.07] text-white/40 hover:bg-white/[0.04]'
+                          : 'border-[var(--dash-card-border)] text-[var(--color-text-secondary)] hover:bg-[var(--color-background-secondary)]'
                       }`}
                     >
                       {t.label}
                     </button>
                   ))}
                 </div>
-                {codeTypeObj && <p className="text-xs text-white/25 mt-2">{codeTypeObj.hint}</p>}
+                {codeTypeObj && <p className="text-xs text-[var(--color-text-tertiary)] mt-2">{codeTypeObj.hint}</p>}
               </div>
             </>
           )}
@@ -283,7 +283,7 @@ function CreateWizard({
           {step === 2 && (
             <>
               <div>
-                <label className="block text-xs font-medium text-white/40 mb-2">Вид скидки *</label>
+                <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-2">Вид скидки *</label>
                 <div className="flex gap-2">
                   {(['percent', 'fixed', 'free'] as DiscountType[]).map(t => {
                     const labels = { percent: '% Процент', fixed: '₸ Сумма', free: '🎁 Бесплатный' };
@@ -295,7 +295,7 @@ function CreateWizard({
                         className={`flex-1 py-2.5 rounded-xl border text-xs font-medium transition-all ${
                           form.discountType === t
                             ? 'border-orange-500/40 bg-orange-500/[0.08] text-orange-300'
-                            : 'border-white/[0.07] text-white/35 hover:bg-white/[0.04]'
+                            : 'border-[var(--dash-card-border)] text-[var(--color-text-tertiary)] hover:bg-[var(--color-background-secondary)]'
                         }`}
                       >
                         {labels[t]}
@@ -307,7 +307,7 @@ function CreateWizard({
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-white/40 mb-1.5">Размер скидки *</label>
+                  <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Размер скидки *</label>
                   <div className="relative">
                     <input
                       type="number"
@@ -317,14 +317,14 @@ function CreateWizard({
                       disabled={form.discountType === 'free'}
                       className={`${inputCls} pr-8 disabled:opacity-30`}
                     />
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-white/25">
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[var(--color-text-tertiary)]">
                       {form.discountType === 'percent' ? '%' : '₸'}
                     </span>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-white/40 mb-1.5">Мин. сумма заказа</label>
+                  <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Мин. сумма заказа</label>
                   <div className="relative">
                     <input
                       type="number"
@@ -333,13 +333,13 @@ function CreateWizard({
                       placeholder="5000"
                       className={`${inputCls} pr-6`}
                     />
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-white/25">₸</span>
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[var(--color-text-tertiary)]">₸</span>
                   </div>
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-white/40 mb-1.5">Применяется к событиям</label>
+                <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Применяется к событиям</label>
                 <select className={selectCls}>
                   <option>Все события организатора</option>
                   <option>Только выбранные события</option>
@@ -353,7 +353,7 @@ function CreateWizard({
             <>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-white/40 mb-1.5">Макс. использований</label>
+                  <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Макс. использований</label>
                   <input
                     type="number"
                     value={form.maxUses}
@@ -361,11 +361,11 @@ function CreateWizard({
                     placeholder="100"
                     className={inputCls}
                   />
-                  <p className="text-xs text-white/20 mt-1">Пусто — без лимита</p>
+                  <p className="text-xs text-[var(--color-text-tertiary)] mt-1">Пусто — без лимита</p>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-white/40 mb-1.5">На 1 покупателя</label>
+                  <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">На 1 покупателя</label>
                   <input
                     type="number"
                     value={form.perUser}
@@ -373,12 +373,12 @@ function CreateWizard({
                     placeholder="1"
                     className={inputCls}
                   />
-                  <p className="text-xs text-white/20 mt-1">Раз на один email</p>
+                  <p className="text-xs text-[var(--color-text-tertiary)] mt-1">Раз на один email</p>
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-white/40 mb-1.5">Макс. билетов за транзакцию</label>
+                <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Макс. билетов за транзакцию</label>
                 <input
                   type="number"
                   value={form.maxTickets}
@@ -394,7 +394,7 @@ function CreateWizard({
             <>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-white/40 mb-1.5">Начало действия</label>
+                  <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Начало действия</label>
                   <input
                     type="date"
                     value={form.startsAt}
@@ -404,7 +404,7 @@ function CreateWizard({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-white/40 mb-1.5">Конец действия</label>
+                  <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Конец действия</label>
                   <input
                     type="date"
                     value={form.expiresAt}
@@ -415,7 +415,7 @@ function CreateWizard({
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-white/40 mb-2">Начальный статус</label>
+                <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-2">Начальный статус</label>
                 <div className="flex gap-2">
                   {[
                     { v: 'active' as PromoStatus, label: 'Активен сразу' },
@@ -427,7 +427,7 @@ function CreateWizard({
                       className={`flex-1 py-2.5 rounded-xl border text-sm font-medium transition-all ${
                         form.status === opt.v
                           ? 'border-orange-500/40 bg-orange-500/[0.08] text-orange-300'
-                          : 'border-white/[0.07] text-white/35 hover:bg-white/[0.04]'
+                          : 'border-[var(--dash-card-border)] text-[var(--color-text-tertiary)] hover:bg-[var(--color-background-secondary)]'
                       }`}
                     >
                       {opt.label}
@@ -439,12 +439,12 @@ function CreateWizard({
           )}
         </div>
 
-        <div className="flex items-center justify-between px-6 py-4 border-t border-white/[0.06]" style={{ background: '#0d0d0d' }}>
+        <div className="flex items-center justify-between px-6 py-4 border-t border-[var(--dash-card-border)]" >
           <div className="flex gap-2">
             {step > 1 && (
               <button
                 onClick={() => setStep(s => s - 1)}
-                className="px-4 py-2 border border-white/[0.08] rounded-xl text-sm text-white/40 hover:text-white/60 hover:border-white/15 transition-colors"
+                className="px-4 py-2 border border-[var(--dash-card-border)] rounded-xl text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-secondary)] hover:border-[var(--dash-card-border)] transition-colors"
               >
                 Назад
               </button>
@@ -452,7 +452,7 @@ function CreateWizard({
 
             <button
               onClick={onClose}
-              className="px-4 py-2 border border-white/[0.08] rounded-xl text-sm text-white/40 hover:text-white/60 transition-colors"
+              className="px-4 py-2 border border-[var(--dash-card-border)] rounded-xl text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-secondary)] transition-colors"
             >
               Отмена
             </button>
@@ -551,11 +551,11 @@ export default function PromoCodesPage() {
   };
 
   return (
-    <div className="min-h-screen p-6" style={{ background: '#0d0d0d', color: 'white' }}>
+    <div className="min-h-screen p-6" >
       <div className="flex items-start justify-between mb-6">
         <div>
-          <h1 className="text-xl font-semibold text-white">Промокоды</h1>
-          <p className="text-sm text-white/30 mt-0.5">Управление скидочными кодами для ваших событий</p>
+          <h1 className="text-xl font-semibold text-[var(--color-text-primary)]">Промокоды</h1>
+          <p className="text-sm text-[var(--color-text-tertiary)] mt-0.5">Управление скидочными кодами для ваших событий</p>
         </div>
 
         <button
@@ -573,9 +573,9 @@ export default function PromoCodesPage() {
           { label: 'Скидок выдано', value: fmt(kpi.discount), delta: '↓ 5% от выручки', up: false },
           { label: 'Конверсия', value: '34%', delta: '↑ 6 пп vs прошлый мес.', up: true },
         ].map(k => (
-          <div key={k.label} className="rounded-2xl border border-white/[0.06] p-4" style={{ background: '#111' }}>
-            <div className="text-xs text-white/30 mb-2">{k.label}</div>
-            <div className="text-2xl font-semibold text-white">{k.value}</div>
+          <div key={k.label} className="rounded-2xl border border-[var(--dash-card-border)] p-4" >
+            <div className="text-xs text-[var(--color-text-tertiary)] mb-2">{k.label}</div>
+            <div className="text-2xl font-semibold text-[var(--color-text-primary)]">{k.value}</div>
             <div className={`text-xs mt-1 ${k.up ? 'text-emerald-400' : 'text-red-400'}`}>{k.delta}</div>
           </div>
         ))}
@@ -583,13 +583,13 @@ export default function PromoCodesPage() {
 
       <div className="flex items-center gap-2 mb-4 flex-wrap">
         <div className="relative flex-1 min-w-40">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/20 text-sm">🔍</span>
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-tertiary)] text-sm">🔍</span>
           <input
             type="text"
             placeholder="Найти по коду или названию…"
             value={search}
             onChange={e => handleSearchChange(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 bg-white/[0.04] border border-white/[0.07] rounded-xl text-sm text-white/70 placeholder:text-white/20 focus:outline-none focus:border-white/15"
+            className="w-full pl-9 pr-4 py-2 bg-[var(--color-background-secondary)] border border-[var(--dash-card-border)] rounded-xl text-sm text-[var(--color-text-primary)] placeholder:text-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--dash-card-border)]"
           />
         </div>
 
@@ -600,7 +600,7 @@ export default function PromoCodesPage() {
             className={`px-3 py-1.5 rounded-xl border text-xs font-medium transition-all ${
               filter === f.value
                 ? 'bg-orange-500/10 border-orange-500/30 text-orange-400'
-                : 'border-white/[0.07] text-white/35 hover:bg-white/[0.04] hover:text-white/50'
+                : 'border-[var(--dash-card-border)] text-[var(--color-text-tertiary)] hover:bg-[var(--color-background-secondary)] hover:text-[var(--color-text-secondary)]'
             }`}
           >
             {f.label}
@@ -608,12 +608,12 @@ export default function PromoCodesPage() {
         ))}
       </div>
 
-      <div className="rounded-2xl border border-white/[0.06] overflow-hidden" style={{ background: '#111' }}>
+      <div className="rounded-2xl border border-[var(--dash-card-border)] overflow-hidden" >
         <table className="w-full text-sm">
-          <thead className="border-b border-white/[0.06]" style={{ background: '#0d0d0d' }}>
+          <thead className="border-b border-[var(--dash-card-border)]" >
             <tr>
               {['КОД', 'ТИП', 'СКИДКА', 'ИСП. / ЛИМИТ', 'ВЫРУЧКА', 'ДО', 'СТАТУС', ''].map(h => (
-                <th key={h} className="text-left px-4 py-3 text-[10px] font-semibold text-white/20 uppercase tracking-wider">
+                <th key={h} className="text-left px-4 py-3 text-[10px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-wider">
                   {h}
                 </th>
               ))}
@@ -623,7 +623,7 @@ export default function PromoCodesPage() {
           <tbody>
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan={8} className="text-center py-12 text-white/20 text-sm">
+                <td colSpan={8} className="text-center py-12 text-[var(--color-text-tertiary)] text-sm">
                   Промокоды не найдены
                 </td>
               </tr>
@@ -632,31 +632,31 @@ export default function PromoCodesPage() {
                 <tr
                   key={c.id}
                   onClick={() => setSelected(c)}
-                  className="border-b border-white/[0.04] hover:bg-white/[0.03] cursor-pointer transition-colors last:border-none group"
+                  className="border-b border-[var(--dash-card-border)] hover:bg-[var(--color-background-secondary)] cursor-pointer transition-colors last:border-none group"
                 >
                   <td className="px-4 py-3">
-                    <span className="font-mono text-sm font-semibold bg-white/[0.05] border border-white/[0.08] px-2 py-0.5 rounded-lg text-white/80">
+                    <span className="font-mono text-sm font-semibold bg-[var(--color-background-secondary)] border border-[var(--dash-card-border)] px-2 py-0.5 rounded-lg text-[var(--color-text-primary)]">
                       {c.code}
                     </span>
                   </td>
 
                   <td className="px-4 py-3">
-                    <span className="text-xs bg-white/[0.04] border border-white/[0.07] text-white/35 px-2 py-0.5 rounded-lg">
+                    <span className="text-xs bg-[var(--color-background-secondary)] border border-[var(--dash-card-border)] text-[var(--color-text-tertiary)] px-2 py-0.5 rounded-lg">
                       {CODE_TYPE_LABELS[c.codeType]}
                     </span>
                   </td>
 
-                  <td className="px-4 py-3 text-white/70 font-medium">{discountLabel(c)}</td>
+                  <td className="px-4 py-3 text-[var(--color-text-primary)] font-medium">{discountLabel(c)}</td>
                   <td className="px-4 py-3"><UsageBar used={c.used} limit={c.limit} /></td>
-                  <td className="px-4 py-3 text-white/60">{c.revenue ? fmt(c.revenue) : '—'}</td>
-                  <td className="px-4 py-3 text-white/30">{c.expiresAt ?? '—'}</td>
+                  <td className="px-4 py-3 text-[var(--color-text-secondary)]">{c.revenue ? fmt(c.revenue) : '—'}</td>
+                  <td className="px-4 py-3 text-[var(--color-text-tertiary)]">{c.expiresAt ?? '—'}</td>
                   <td className="px-4 py-3"><StatusBadge status={c.status} /></td>
 
                   <td className="px-4 py-3">
                     <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button
                         onClick={e => e.stopPropagation()}
-                        className="p-1.5 rounded-lg hover:bg-white/[0.06] text-white/25 hover:text-white/60 transition-colors text-xs"
+                        className="p-1.5 rounded-lg hover:bg-[var(--color-background-secondary)] text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)] transition-colors text-xs"
                       >
                         ✎
                       </button>
@@ -666,14 +666,14 @@ export default function PromoCodesPage() {
                           e.stopPropagation();
                           navigator.clipboard?.writeText(c.code);
                         }}
-                        className="p-1.5 rounded-lg hover:bg-white/[0.06] text-white/25 hover:text-white/60 transition-colors text-xs"
+                        className="p-1.5 rounded-lg hover:bg-[var(--color-background-secondary)] text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)] transition-colors text-xs"
                       >
                         ⎘
                       </button>
 
                       <button
                         onClick={e => e.stopPropagation()}
-                        className="p-1.5 rounded-lg hover:bg-red-500/[0.08] text-white/25 hover:text-red-400 transition-colors text-xs"
+                        className="p-1.5 rounded-lg hover:bg-red-500/[0.08] text-[var(--color-text-tertiary)] hover:text-red-400 transition-colors text-xs"
                       >
                         ✕
                       </button>
@@ -685,7 +685,7 @@ export default function PromoCodesPage() {
           </tbody>
         </table>
 
-        <div className="flex items-center justify-between px-4 py-3 border-t border-white/[0.05] text-xs text-white/25">
+        <div className="flex items-center justify-between px-4 py-3 border-t border-[var(--dash-card-border)] text-xs text-[var(--color-text-tertiary)]">
           <span>
             Показано {filtered.length === 0 ? 0 : (page - 1) * PAGE_SIZE + 1}
             –{Math.min(page * PAGE_SIZE, filtered.length)} из {filtered.length}
@@ -695,7 +695,7 @@ export default function PromoCodesPage() {
             <button
               onClick={() => setPage(p => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="px-2.5 py-1 rounded-lg border border-white/[0.07] text-white/30 hover:bg-white/[0.04] disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+              className="px-2.5 py-1 rounded-lg border border-[var(--dash-card-border)] text-[var(--color-text-tertiary)] hover:bg-[var(--color-background-secondary)] disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
             >
               ‹
             </button>
@@ -707,7 +707,7 @@ export default function PromoCodesPage() {
                 className={`px-2.5 py-1 rounded-lg border text-xs transition-colors ${
                   page === n
                     ? 'bg-orange-500/10 border-orange-500/25 text-orange-400'
-                    : 'border-white/[0.07] text-white/30 hover:bg-white/[0.04]'
+                    : 'border-[var(--dash-card-border)] text-[var(--color-text-tertiary)] hover:bg-[var(--color-background-secondary)]'
                 }`}
               >
                 {n}
@@ -717,7 +717,7 @@ export default function PromoCodesPage() {
             <button
               onClick={() => setPage(p => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
-              className="px-2.5 py-1 rounded-lg border border-white/[0.07] text-white/30 hover:bg-white/[0.04] disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+              className="px-2.5 py-1 rounded-lg border border-[var(--dash-card-border)] text-[var(--color-text-tertiary)] hover:bg-[var(--color-background-secondary)] disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
             >
               ›
             </button>

@@ -59,12 +59,12 @@ const MOCK_SUMMARY: ChartSummary = {
 }
 
 const STATUS_CONFIG: Record<EventStatus, { label: string; dot: string; bg: string; text: string }> = {
-  published:  { label: 'Продаётся',   dot: 'bg-emerald-400', bg: 'bg-emerald-400/10 border-emerald-400/20', text: 'text-emerald-400' },
-  moderation: { label: 'Проверяется', dot: 'bg-amber-400',   bg: 'bg-amber-400/10 border-amber-400/20',     text: 'text-amber-400' },
-  draft:      { label: 'Черновик',    dot: 'bg-sky-400',     bg: 'bg-sky-400/10 border-sky-400/20',         text: 'text-sky-400' },
-  rejected:   { label: 'Отклонено',   dot: 'bg-red-400',     bg: 'bg-red-400/10 border-red-400/20',         text: 'text-red-400' },
-  finished:   { label: 'Завершено',   dot: 'bg-blue-400',    bg: 'bg-blue-400/10 border-blue-400/20',        text: 'text-blue-400' },
-  archive:    { label: 'Архив',       dot: 'bg-zinc-500',    bg: 'bg-zinc-500/10 border-zinc-500/20',        text: 'text-zinc-500' },
+  published:  { label: 'Продаётся',   dot: 'bg-emerald-500', bg: 'bg-emerald-50 border-emerald-200 dark:bg-emerald-400/10 dark:border-emerald-400/20', text: 'text-emerald-700 dark:text-emerald-400' },
+  moderation: { label: 'Проверяется', dot: 'bg-amber-500',   bg: 'bg-amber-50 border-amber-200 dark:bg-amber-400/10 dark:border-amber-400/20',         text: 'text-amber-700 dark:text-amber-400' },
+  draft:      { label: 'Черновик',    dot: 'bg-sky-500',     bg: 'bg-sky-50 border-sky-200 dark:bg-sky-400/10 dark:border-sky-400/20',                 text: 'text-sky-700 dark:text-sky-400' },
+  rejected:   { label: 'Отклонено',   dot: 'bg-red-500',     bg: 'bg-red-50 border-red-200 dark:bg-red-400/10 dark:border-red-400/20',                 text: 'text-red-700 dark:text-red-400' },
+  finished:   { label: 'Завершено',   dot: 'bg-blue-500',    bg: 'bg-blue-50 border-blue-200 dark:bg-blue-400/10 dark:border-blue-400/20',             text: 'text-blue-700 dark:text-blue-400' },
+  archive:    { label: 'Архив',       dot: 'bg-zinc-400',    bg: 'bg-zinc-100 border-zinc-200 dark:bg-zinc-500/10 dark:border-zinc-500/20',            text: 'text-zinc-500 dark:text-zinc-400' },
 }
 
 type Tab = 'mine' | 'moderation' | 'archive'
@@ -87,13 +87,8 @@ function formatAmount(v: number) {
   return String(Math.round(v))
 }
 
-function fmt(v: number) {
-  return v.toLocaleString('ru-KZ') + ' ₸'
-}
-
 function StatusBadge({ status }: { status: EventStatus }) {
   const s = STATUS_CONFIG[status]
-
   return (
     <span className={`inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-xs ${s.bg} ${s.text}`}>
       <span className={`h-1.5 w-1.5 rounded-full ${s.dot}`} />
@@ -109,33 +104,34 @@ function MetricCard({ label, value, delta, up = true }: {
   up?: boolean
 }) {
   return (
-    <div className="rounded-2xl border border-white/[0.06] p-4" style={{ background: '#111' }}>
-      <div className="mb-2 text-xs text-white/30">{label}</div>
-      <div className="text-2xl font-semibold text-white">{value}</div>
-      <div className={`mt-1 text-xs ${up ? 'text-emerald-400' : 'text-red-400'}`}>{delta}</div>
+    <div className="rounded-2xl border border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] p-4 shadow-[var(--dash-card-shadow)]">
+      <div className="mb-2 text-xs text-[var(--color-text-tertiary)]">{label}</div>
+      <div className="text-2xl font-semibold text-[var(--color-text-primary)]">{value}</div>
+      <div className={`mt-1 text-xs ${up ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
+        {delta}
+      </div>
     </div>
   )
 }
 
 function ChartSkeleton() {
   return (
-    <div className="rounded-2xl border border-white/[0.06] p-5" style={{ background: '#111' }}>
+    <div className="rounded-2xl border border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] p-5">
       <div className="mb-5 flex items-start justify-between">
         <div>
-          <div className="h-4 w-32 animate-pulse rounded bg-white/[0.05]" />
-          <div className="mt-2 h-3 w-24 animate-pulse rounded bg-white/[0.04]" />
+          <div className="h-4 w-32 animate-pulse rounded bg-[var(--color-border-secondary)]" />
+          <div className="mt-2 h-3 w-24 animate-pulse rounded bg-[var(--color-border-secondary)]" />
         </div>
         <div className="flex gap-2">
-          <div className="h-8 w-20 animate-pulse rounded-xl bg-white/[0.04]" />
-          <div className="h-8 w-20 animate-pulse rounded-xl bg-white/[0.04]" />
+          <div className="h-8 w-20 animate-pulse rounded-xl bg-[var(--color-border-secondary)]" />
+          <div className="h-8 w-20 animate-pulse rounded-xl bg-[var(--color-border-secondary)]" />
         </div>
       </div>
-
       <div className="flex h-28 items-end gap-2">
         {Array.from({ length: 7 }).map((_, i) => (
           <div
             key={i}
-            className="flex-1 animate-pulse rounded-lg bg-white/[0.04]"
+            className="flex-1 animate-pulse rounded-lg bg-[var(--color-border-secondary)]"
             style={{ height: `${35 + (i * 11) % 55}%` }}
           />
         ))}
@@ -155,22 +151,12 @@ function SalesChart() {
     fetch('/api/dashboard/sales-chart')
       .then(r => r.json())
       .then(d => {
-        if (d.error) {
-          setData(MOCK_SALES)
-          setSummary(MOCK_SUMMARY)
-          return
-        }
-
+        if (d.error) { setData(MOCK_SALES); setSummary(MOCK_SUMMARY); return }
         const hasData = d.days?.some((day: SalesDay) => day.amount > 0)
-
         setData(hasData ? d.days : MOCK_SALES)
         setSummary(d.summary?.totalAmount > 0 ? d.summary : MOCK_SUMMARY)
       })
-      .catch(() => {
-        setError(true)
-        setData(MOCK_SALES)
-        setSummary(MOCK_SUMMARY)
-      })
+      .catch(() => { setError(true); setData(MOCK_SALES); setSummary(MOCK_SUMMARY) })
   }, [])
 
   if (!data || !summary) return <ChartSkeleton />
@@ -181,11 +167,11 @@ function SalesChart() {
   const hoveredVal = hovered !== null ? values[hovered] : null
 
   return (
-    <div className="rounded-2xl border border-white/[0.06] p-5" style={{ background: '#111' }}>
+    <div className="rounded-2xl border border-[var(--dash-card-border)] bg-[var(--dash-card-bg)] p-5">
       <div className="mb-5 flex items-start justify-between gap-4">
         <div>
-          <div className="text-sm font-semibold text-white">Продажи за 7 дней</div>
-          <div className="mt-0.5 text-xs text-white/30">
+          <div className="text-sm font-semibold text-[var(--color-text-primary)]">Продажи за 7 дней</div>
+          <div className="mt-0.5 text-xs text-[var(--color-text-tertiary)]">
             {hoveredDay && hoveredVal !== null
               ? `${hoveredDay.day}: ${mode === 'amount' ? `₸ ${formatAmount(hoveredVal)}` : `${hoveredVal} билетов`}`
               : error
@@ -196,15 +182,15 @@ function SalesChart() {
           </div>
         </div>
 
-        <div className="flex gap-1 rounded-xl border border-white/[0.07] bg-white/[0.03] p-1">
+        <div className="flex gap-1 rounded-xl border border-[var(--dash-card-border)] bg-[var(--color-background-secondary)] p-1">
           {(['amount', 'tickets'] as const).map(m => (
             <button
               key={m}
               onClick={() => setMode(m)}
               className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
                 mode === m
-                  ? 'bg-orange-500/10 text-orange-400'
-                  : 'text-white/30 hover:bg-white/[0.04] hover:text-white/50'
+                  ? 'bg-orange-500/10 text-orange-600 dark:text-orange-400'
+                  : 'text-[var(--color-text-tertiary)] hover:bg-[var(--color-background-tertiary)] hover:text-[var(--color-text-secondary)]'
               }`}
             >
               {m === 'amount' ? '₸ Выручка' : 'Билеты'}
@@ -228,7 +214,7 @@ function SalesChart() {
             >
               <div className="relative flex h-24 w-full items-end">
                 {isHovered && (
-                  <div className="absolute -top-6 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-lg border border-white/[0.07] bg-black/70 px-2 py-1 text-[10px] text-white/60">
+                  <div className="absolute -top-6 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-lg border border-[var(--dash-card-border)] bg-[var(--color-background-primary)] px-2 py-1 text-[10px] text-[var(--color-text-secondary)]">
                     {mode === 'amount' ? `₸ ${formatAmount(v)}` : v}
                   </div>
                 )}
@@ -237,14 +223,13 @@ function SalesChart() {
                     d.isToday
                       ? 'bg-orange-500/60'
                       : isHovered
-                        ? 'bg-orange-400/50'
-                        : 'bg-white/[0.06]'
+                        ? 'bg-orange-400/40'
+                        : 'bg-[var(--color-border-primary)]'
                   }`}
                   style={{ height: `${h}%` }}
                 />
               </div>
-
-              <div className={`text-xs ${d.isToday ? 'text-orange-400' : 'text-white/25'}`}>
+              <div className={`text-xs ${d.isToday ? 'text-orange-600 dark:text-orange-400' : 'text-[var(--color-text-tertiary)]'}`}>
                 {d.day}
               </div>
             </div>
@@ -252,18 +237,18 @@ function SalesChart() {
         })}
       </div>
 
-      <div className="mt-5 grid grid-cols-3 gap-4 border-t border-white/[0.05] pt-4">
+      <div className="mt-5 grid grid-cols-3 gap-4 border-t border-[var(--dash-card-border)] pt-4">
         <div>
-          <div className="text-xs text-white/25">Итого за неделю</div>
-          <div className="mt-1 text-sm font-medium text-white/70">₸ {formatAmount(summary.totalAmount)}</div>
+          <div className="text-xs text-[var(--color-text-tertiary)]">Итого за неделю</div>
+          <div className="mt-1 text-sm font-medium text-[var(--color-text-secondary)]">₸ {formatAmount(summary.totalAmount)}</div>
         </div>
         <div>
-          <div className="text-xs text-white/25">Билетов</div>
-          <div className="mt-1 text-sm font-medium text-white/70">{summary.totalTickets.toLocaleString('ru-KZ')}</div>
+          <div className="text-xs text-[var(--color-text-tertiary)]">Билетов</div>
+          <div className="mt-1 text-sm font-medium text-[var(--color-text-secondary)]">{summary.totalTickets.toLocaleString('ru-KZ')}</div>
         </div>
         <div>
-          <div className="text-xs text-white/25">Лучший день</div>
-          <div className="mt-1 text-sm font-medium text-emerald-400">
+          <div className="text-xs text-[var(--color-text-tertiary)]">Лучший день</div>
+          <div className="mt-1 text-sm font-medium text-emerald-600 dark:text-emerald-400">
             {summary.bestDay.day} — ₸ {formatAmount(summary.bestDay.amount)}
           </div>
         </div>
@@ -272,33 +257,34 @@ function SalesChart() {
   )
 }
 
+
 function EventRow({ event }: { event: Event }) {
   const pct = event.total > 0 ? Math.round((event.sold / event.total) * 100) : 0
 
   return (
     <Link
       href={`/dashboard/events/${event.id}`}
-      className="group grid grid-cols-[1.2fr_1fr_120px_120px_120px] items-center gap-4 border-b border-white/[0.04] px-4 py-3 transition-colors hover:bg-white/[0.03] last:border-none"
+      className="group grid grid-cols-[1.2fr_1fr_120px_120px_120px] items-center gap-4 border-b border-[var(--dash-card-border)] px-4 py-3 transition-colors hover:bg-[var(--color-background-secondary)] last:border-none"
     >
       <div>
-        <div className="truncate text-sm font-medium text-white/75">{event.title}</div>
-        <div className="mt-0.5 text-xs text-white/30">{event.date} · {event.venue}</div>
+        <div className="truncate text-sm font-medium text-[var(--color-text-primary)]">{event.title}</div>
+        <div className="mt-0.5 text-xs text-[var(--color-text-tertiary)]">{event.date} · {event.venue}</div>
       </div>
 
-      <div className="text-sm text-white/45">
+      <div className="text-sm text-[var(--color-text-secondary)]">
         {event.sold.toLocaleString('ru-KZ')} / {event.total.toLocaleString('ru-KZ')} билетов
       </div>
 
       <div>
         {event.status === 'published' ? (
           <>
-            <div className="h-[3px] rounded-full bg-white/[0.06]">
+            <div className="h-[3px] rounded-full bg-[var(--color-border-tertiary)]">
               <div className="h-full rounded-full bg-emerald-400" style={{ width: `${pct}%` }} />
             </div>
-            <div className="mt-1 text-right text-[10px] text-white/25">{pct}%</div>
+            <div className="mt-1 text-right text-[10px] text-[var(--color-text-tertiary)]">{pct}%</div>
           </>
         ) : (
-          <span className="text-xs text-white/20">—</span>
+          <span className="text-xs text-[var(--color-text-tertiary)]">—</span>
         )}
       </div>
 
@@ -307,7 +293,7 @@ function EventRow({ event }: { event: Event }) {
       </div>
 
       <div className="text-right opacity-0 transition-opacity group-hover:opacity-100">
-        <span className="rounded-lg border border-white/[0.07] px-2 py-1 text-xs text-white/30">
+        <span className="rounded-lg border border-[var(--dash-card-border)] px-2 py-1 text-xs text-[var(--color-text-tertiary)]">
           Открыть →
         </span>
       </div>
@@ -318,13 +304,12 @@ function EventRow({ event }: { event: Event }) {
 export default function DashboardPage() {
   const [tab, setTab] = useState<Tab>('mine')
   const filtered = MOCK_EVENTS.filter(e => TAB_STATUSES[tab].includes(e.status))
-
   return (
-    <div className="min-h-screen p-6" style={{ background: '#0d0d0d', color: 'white' }}>
+    <div className="min-h-screen p-6 bg-[var(--dash-bg)] text-[var(--color-text-primary)]">
       <div className="mb-6 flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-xl font-semibold text-white">Обзор</h1>
-          <p className="mt-0.5 text-sm text-white/30">
+          <h1 className="text-xl font-semibold text-[var(--color-text-primary)]">Обзор</h1>
+          <p className="mt-0.5 text-sm text-[var(--color-text-tertiary)]">
             Главный экран организатора: продажи, события и операционный статус
           </p>
         </div>
@@ -348,8 +333,8 @@ export default function DashboardPage() {
         <SalesChart />
       </div>
 
-      <section className="overflow-hidden rounded-2xl border border-white/[0.06]" style={{ background: '#111' }}>
-        <div className="flex items-center justify-between border-b border-white/[0.06] px-4" style={{ background: '#0d0d0d' }}>
+      <section className="overflow-hidden rounded-2xl border border-[var(--dash-card-border)]" >
+        <div className="flex items-center justify-between border-b border-[var(--dash-card-border)] px-4" >
           <div className="flex gap-2">
             {TABS.map(t => (
               <button
@@ -358,7 +343,7 @@ export default function DashboardPage() {
                 className={`border-b-2 px-4 py-4 text-sm font-medium transition-colors ${
                   tab === t.id
                     ? 'border-orange-500 text-orange-400'
-                    : 'border-transparent text-white/35 hover:text-white/55'
+                    : 'border-transparent text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)]'
                 }`}
               >
                 {t.label}
@@ -366,14 +351,14 @@ export default function DashboardPage() {
             ))}
           </div>
 
-          <div className="text-xs text-white/25">
+          <div className="text-xs text-[var(--color-text-tertiary)]">
             {filtered.length} событий
           </div>
         </div>
 
         <div className="overflow-x-auto">
           <div className="min-w-[860px]">
-            <div className="grid grid-cols-[1.2fr_1fr_120px_120px_120px] gap-4 border-b border-white/[0.06] px-4 py-3 text-[10px] font-semibold uppercase tracking-wider text-white/20">
+            <div className="grid grid-cols-[1.2fr_1fr_120px_120px_120px] gap-4 border-b border-[var(--dash-card-border)] px-4 py-3 text-[10px] font-semibold uppercase tracking-wider text-[var(--color-text-tertiary)]">
               <div>Событие</div>
               <div>Продажи</div>
               <div>Заполнение</div>
@@ -384,8 +369,8 @@ export default function DashboardPage() {
             {filtered.length === 0 ? (
               <div className="py-14 text-center">
                 <div className="mb-2 text-2xl">🎟️</div>
-                <div className="text-sm font-medium text-white/50">Событий нет</div>
-                <div className="mt-1 text-xs text-white/25">
+                <div className="text-sm font-medium text-[var(--color-text-secondary)]">Событий нет</div>
+                <div className="mt-1 text-xs text-[var(--color-text-tertiary)]">
                   Здесь появятся события после создания или модерации.
                 </div>
               </div>

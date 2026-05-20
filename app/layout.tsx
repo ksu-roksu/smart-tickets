@@ -15,7 +15,19 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <html lang="ru" className="dark" suppressHydrationWarning>
+      <html lang="ru" suppressHydrationWarning>
+        <head>
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                try {
+                  var t = localStorage.getItem('dash_theme') || 'dark';
+                  if (t === 'dark') document.documentElement.classList.add('dark');
+                } catch(e) {}
+              `,
+            }}
+          />
+        </head>
         <body>
           <AppChrome>{children}</AppChrome>
         </body>

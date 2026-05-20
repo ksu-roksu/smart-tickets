@@ -135,7 +135,7 @@ function EventPreview({
         <span
           style={{
             fontSize: 11,
-            color: 'rgba(255,255,255,0.4)',
+            color: 'var(--color-text-tertiary)',
             textTransform: 'uppercase',
             letterSpacing: '0.08em',
           }}
@@ -149,7 +149,7 @@ function EventPreview({
             color:
               completion >= 80
                 ? '#18a66a'
-                : 'rgba(255,255,255,0.4)',
+                : 'var(--color-text-tertiary)',
           }}
         >
           {completion}% готово
@@ -161,8 +161,8 @@ function EventPreview({
         style={{
           borderRadius: 28,
           overflow: 'hidden',
-          background: '#111',
-          border: '1px solid rgba(255,255,255,0.08)',
+          background: 'var(--dash-card-bg)',
+          border: '1px solid var(--color-border-tertiary)',
           boxShadow: '0 20px 60px rgba(0,0,0,0.45)',
         }}
       >
@@ -192,7 +192,7 @@ function EventPreview({
               padding: '7px 12px',
               borderRadius: 999,
               background: 'rgba(0,0,0,0.55)',
-              border: '1px solid rgba(255,255,255,0.08)',
+              border: '1px solid var(--color-border-tertiary)',
               color: '#fff',
               fontSize: 11,
               fontWeight: 700,
@@ -210,7 +210,7 @@ function EventPreview({
               lineHeight: 1.05,
               fontWeight: 800,
               letterSpacing: '-0.05em',
-              color: '#fff',
+              color: "var(--color-text-primary)",
             }}
           >
             {data.title || 'Название события'}
@@ -222,7 +222,7 @@ function EventPreview({
               marginBottom: 18,
               fontSize: 14,
               lineHeight: 1.5,
-              color: 'rgba(255,255,255,0.65)',
+              color: 'var(--color-text-secondary)',
             }}
           >
             {data.shortDesc || 'Короткое описание события'}
@@ -234,7 +234,7 @@ function EventPreview({
               flexDirection: 'column',
               gap: 10,
               paddingTop: 18,
-              borderTop: '1px solid rgba(255,255,255,0.08)',
+              borderTop: '1px solid var(--color-border-tertiary)',
             }}
           >
             <div
@@ -242,7 +242,7 @@ function EventPreview({
                 display: 'flex',
                 alignItems: 'center',
                 gap: 10,
-                color: 'rgba(255,255,255,0.8)',
+                color: 'var(--color-text-primary)',
                 fontSize: 13,
               }}
             >
@@ -260,7 +260,7 @@ function EventPreview({
                 display: 'flex',
                 alignItems: 'center',
                 gap: 10,
-                color: 'rgba(255,255,255,0.8)',
+                color: 'var(--color-text-primary)',
                 fontSize: 13,
               }}
             >
@@ -286,7 +286,7 @@ function EventPreview({
               <div
                 style={{
                   fontSize: 11,
-                  color: 'rgba(255,255,255,0.45)',
+                  color: 'var(--color-text-tertiary)',
                   marginBottom: 4,
                   textTransform: 'uppercase',
                   letterSpacing: '0.08em',
@@ -435,8 +435,8 @@ export default function NewEventPage() {
     <div
       style={{
         minHeight: '100vh',
-        background: '#0d0d0d',
-        color: '#fff',
+        background: 'var(--dash-bg)',
+        color: "var(--color-text-primary)",
       }}
     >
 
@@ -446,10 +446,10 @@ export default function NewEventPage() {
           position: 'sticky',
           top: 0,
           zIndex: 40,
-          background: 'rgba(13,13,13,0.92)',
+          background: 'color-mix(in oklab, var(--dash-bg) 92%, transparent)',
           backdropFilter: 'blur(18px)',
           borderBottom:
-            '1px solid rgba(255,255,255,0.06)',
+            '1px solid var(--color-border-tertiary)',
         }}
       >
         <div
@@ -498,7 +498,7 @@ export default function NewEventPage() {
                   fontSize: 26,
                   fontWeight: 800,
                   letterSpacing: '-0.04em',
-                  color: '#fff',
+                  color: "var(--color-text-primary)",
                 }}
               >
                 Создание события
@@ -508,7 +508,7 @@ export default function NewEventPage() {
                 style={{
                   marginTop: 7,
                   fontSize: 13,
-                  color: 'rgba(255,255,255,0.45)',
+                  color: 'var(--color-text-tertiary)',
                 }}
               >
                 Шаг {step + 1} из {STEPS.length}
@@ -527,14 +527,14 @@ export default function NewEventPage() {
               style={{
                 padding: '8px 12px',
                 borderRadius: 14,
-                background: 'rgba(255,255,255,0.04)',
+                background: 'var(--color-background-secondary)',
                 border:
-                  '1px solid rgba(255,255,255,0.08)',
+                  '1px solid var(--color-border-tertiary)',
                 fontSize: 12,
                 color:
                   saveState === 'saved'
                     ? '#18a66a'
-                    : 'rgba(255,255,255,0.55)',
+                    : 'var(--color-text-secondary)',
               }}
             >
               {saveState === 'saving'
@@ -584,10 +584,10 @@ export default function NewEventPage() {
           left: 0,
           right: 0,
           zIndex: 30,
-          background: 'rgba(13,13,13,0.88)',
+          background: 'color-mix(in oklab, var(--dash-bg) 88%, transparent)',
           backdropFilter: 'blur(18px)',
           borderTop:
-            '1px solid rgba(255,255,255,0.06)',
+            '1px solid var(--color-border-tertiary)',
           padding: '12px 28px',
         }}
       >
@@ -607,9 +607,9 @@ export default function NewEventPage() {
               padding: '0 20px',
               borderRadius: 14,
               border:
-                '1px solid rgba(255,255,255,0.08)',
-              background: 'rgba(255,255,255,0.04)',
-              color: 'rgba(255,255,255,0.55)',
+                '1px solid var(--color-border-tertiary)',
+              background: 'var(--color-background-secondary)',
+              color: 'var(--color-text-secondary)',
             }}
           >
             ← Назад
@@ -627,9 +627,9 @@ export default function NewEventPage() {
                 padding: '0 20px',
                 borderRadius: 14,
                 border:
-                  '1px solid rgba(255,255,255,0.08)',
-                background: 'rgba(255,255,255,0.04)',
-                color: 'rgba(255,255,255,0.75)',
+                  '1px solid var(--color-border-tertiary)',
+                background: 'var(--color-background-secondary)',
+                color: 'var(--color-text-primary)',
               }}
             >
               Сохранить
