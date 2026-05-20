@@ -40,10 +40,10 @@ export default async function TeamPage() {
   }))
 
   return (
-    <TeamClient
-      members={mapped}
-      canManageTeam={ctx.role === 'SUPER_ADMIN' || ctx.role === 'OWNER'}
-      isPlatformUser={ctx.isPlatformUser}
-    />
-  )
+  <TeamClient
+    members={mapped}
+    canManageTeam={CAN_MANAGE.includes(ctx.role ?? '')}
+    isPlatformUser={ctx.isPlatformUser}
+  />
+)
 }

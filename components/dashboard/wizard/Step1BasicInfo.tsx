@@ -7,6 +7,7 @@
 
 import { useState } from 'react'
 import type { StepProps } from './ui'
+import type { EventCategory, EventMood } from './types'
 import {
   WizardCard, WizardSection, Field,
   Input, Textarea, Select, ChipPicker, Toggle, WizardNav,
@@ -83,7 +84,7 @@ export default function Step1BasicInfo({ data, update, onNext, onPrev }: StepPro
           <Field label="Категория" required error={errors.category} info="Категория влияет на фильтры, рекомендации и навигацию в каталоге.">
             <Select
               value={data.category}
-              onChange={v => update({ category: v })}
+              onChange={v => update({ category: v as EventCategory | '' })}
               options={CATEGORIES}
               placeholder="Выберите категорию"
             />
@@ -166,7 +167,7 @@ export default function Step1BasicInfo({ data, update, onNext, onPrev }: StepPro
             <ChipPicker
               options={MOOD_OPTIONS}
               selected={data.mood}
-              onChange={v => update({ mood: v })}
+              onChange={v => update({ mood: v as EventMood[] })}
               max={4}
             />
           </Field>

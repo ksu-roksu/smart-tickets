@@ -199,7 +199,7 @@ export function GridCard({ event, idx }: { event: EventItem; idx: number }) {
         </div>
 
         <div className="flex items-center gap-1.5">
-          <WeatherBadge city={event.venue.city} category={event.category} />
+          <WeatherBadge city={event.venue.city} category={event.category ?? undefined} />
           <ViewersBadge seed={idx * 7 + 3} />
           <WishlistBtn eventId={event.id} />
         </div>
@@ -318,7 +318,7 @@ export function HeroCard({ event }: { event: EventItem }) {
         </div>
 
         <div className="flex items-center gap-1.5">
-          <WeatherBadge city={event.venue.city} category={event.category} />
+          <WeatherBadge city={event.venue.city} category={event.category ?? undefined} />
           <ViewersBadge seed={11} />
           <WishlistBtn eventId={event.id} />
         </div>
@@ -529,7 +529,7 @@ export function MatchCard({ event }: { event: EventItem }) {
             {days === 0 ? `Сегодня ${fmtTime(event.date)}` : `${fmtDate(event.date)} · ${fmtTime(event.date)}`}
           </p>
           <p className="text-[10px] text-white/25">· {event.venue.name}</p>
-          <WeatherBadge city={event.venue.city} category={event.category} />
+          <WeatherBadge city={event.venue.city} category={event.category ?? undefined} />
         </div>
 
         <div className="flex items-center gap-2">

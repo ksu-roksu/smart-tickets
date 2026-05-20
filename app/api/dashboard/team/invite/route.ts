@@ -149,7 +149,7 @@ export async function POST(req: Request) {
         role: updated.role,
         inviteLink,
         invitedByName: invitedByUser?.name,
-      }).catch((err) => console.error('sendInviteEmail (resent) error:', err))
+      }).catch((err: unknown) => console.error('sendInviteEmail (resent) error:', err))
 
       await safeAuditLog({
         actorUserId: ctx.isPlatformUser ? null : ctx.userId,
@@ -201,7 +201,7 @@ export async function POST(req: Request) {
       role: member.role,
       inviteLink,
       invitedByName: invitedByUser?.name,
-    }).catch((err) => console.error('sendInviteEmail error:', err))
+    }).catch((err: unknown) => console.error('sendInviteEmail error:', err))
 
     await safeAuditLog({
       actorUserId: ctx.isPlatformUser ? null : ctx.userId,

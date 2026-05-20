@@ -1,0 +1,2 @@
+ALTER TABLE "AuditLog"
+DROP CONSTRAINT IF EXISTS "audit_event_fk";

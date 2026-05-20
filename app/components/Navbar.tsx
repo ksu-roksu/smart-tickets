@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useTheme } from 'next-themes';
 import { useUser, SignOutButton } from '@clerk/nextjs';
 import {
   Moon, Sun, Search, Ticket, User, Home,
@@ -101,6 +100,13 @@ function CityDropdown({ city, setCity }: { city: string; setCity: (c: string) =>
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (savedLang) setLang(savedLang);
+    const savedTheme = localStorage.getItem('st_theme') as 'dark' | 'light' | null;
+
+if (savedTheme) {
+  setTheme(savedTheme);
+  document.documentElement.classList.toggle('dark', savedTheme === 'dark');
+}
     const handler = (e: MouseEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
     };
@@ -331,13 +337,13 @@ function MobileTabBar({ lang, ticketCount }: { lang: Lang; ticketCount: number }
 // ─── Main Navbar ──────────────────────────────────────────────────────────────
 
 export default function Navbar() {
-  const { resolvedTheme, setTheme } = useTheme();
   const { isSignedIn, user } = useUser(); // ← user деструктурирован здесь, не внутри JSX
 
   const [city, setCity] = useState('Алматы');
   const [lang, setLang] = useState<Lang>('RU');
   const [ticketCount, setTicketCount] = useState(0);
   const [mounted, setMounted] = useState(false);
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
 
   // Restore saved prefs
   useEffect(() => {
@@ -366,6 +372,16 @@ export default function Navbar() {
 
   useEffect(() => { if (mounted) localStorage.setItem('st_city', city); }, [city, mounted]);
   useEffect(() => { if (mounted) localStorage.setItem('st_lang', lang); }, [lang, mounted]);
+useEffect(() => {
+  if (!mounted) return;
+
+  localStorage.setItem('st_theme', theme);
+
+  document.documentElement.classList.toggle(
+    'dark',
+    theme === 'dark'
+  );
+}, [theme, mounted]);
 
   useEffect(() => {
     if (!isSignedIn) return;
@@ -375,7 +391,6 @@ export default function Navbar() {
       .catch(() => {});
   }, [isSignedIn]);
 
-  const isDark = resolvedTheme === 'dark';
   const userInitial = (user?.firstName?.[0] ?? 'А').toUpperCase();
 
   return (
@@ -402,12 +417,12 @@ export default function Navbar() {
         <div className="flex items-center gap-1.5">
           {mounted && (
             <button
-              onClick={() => setTheme(isDark ? 'light' : 'dark')}
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
               className="w-[34px] h-[34px] rounded-full bg-white/7 hover:bg-white/12 border border-white/10 flex items-center justify-center text-white/60 transition-colors"
               aria-label="Сменить тему"
             >
-              {isDark ? <Sun size={15} /> : <Moon size={15} />}
-            </button>
+              {isDark ? <Sun size={15} /> : <Moon size={15} />}{theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
+              button>
           )}
 
           <LangSelector lang={lang} setLang={setLang} />

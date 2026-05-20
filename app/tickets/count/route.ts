@@ -7,7 +7,7 @@ export async function GET() {
   if (!userId) return NextResponse.json({ count: 0 });
 
   const count = await prisma.ticket.count({
-    where: { userId, status: 'ACTIVE' },
+    where: { userId, status: 'VALID' },
   });
 
   return NextResponse.json({ count });

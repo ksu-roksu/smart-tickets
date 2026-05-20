@@ -7,7 +7,8 @@
 
 import { useState } from 'react'
 import { nanoid } from 'nanoid'
-import type { StepProps, TicketTypeForm } from './types'
+import type { StepProps } from './ui'
+import type { TicketTypeForm, RefundPolicy } from './types'
 import {
   WizardCard, WizardSection, Field,
   Input, Select, Toggle, WizardNav,
@@ -332,7 +333,7 @@ export default function Step3Tickets({ data, update, onNext, onPrev }: StepProps
           <Field label="Условия возврата" hint="Покупатель увидит это перед оплатой" info="Политика возврата снижает споры и обращения в поддержку.">
             <Select
               value={data.refundPolicy}
-              onChange={v => update({ refundPolicy: v as WizardData['refundPolicy'] })}
+              onChange={v => update({ refundPolicy: v as RefundPolicy })}
               options={REFUND_OPTIONS}
             />
           </Field>
@@ -355,4 +356,3 @@ export default function Step3Tickets({ data, update, onNext, onPrev }: StepProps
 }
 
 // Fix missing import
-type WizardData = import('@/app/dashboard/events/new/page').WizardData
